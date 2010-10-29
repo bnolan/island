@@ -1,0 +1,33 @@
+# package_assets:         on          # (on, off, always)
+# embed_assets:           on          # (on, off, datauri)
+# compress_assets:        on          # (on, off)
+# gzip_assets:            on          # (on, off)
+template_function:      _.template  # (defaults to the built-in micro-templating)
+# package_path:           packages    # (defaults to assets)
+# javascript_compressor:  closure     # (yui, closure)
+# compressor_options:
+#   compilation_level: ADVANCED_OPTIMIZATIONS
+
+javascripts:
+  web:
+    - public/javascripts/jquery.js
+    - public/javascripts/jquery-ui.js
+    - public/javascripts/underscore.js
+    - public/javascripts/backbone.js
+    - public/javascripts/rails.js
+
+    - public/scripts/*.js
+    - public/scripts/**/*.js
+
+  web_templates:
+    - app/views/clients/web/**/*.jst
+
+  iphone_templates:
+    - app/views/clients/iphone/**/*.jst
+
+stylesheets:
+  web:
+    - public/stylesheets/aristo.css
+    - public/stylesheets/web.css
+  iphone:
+    - public/stylesheets/pages/client.less

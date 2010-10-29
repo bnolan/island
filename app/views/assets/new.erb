@@ -1,0 +1,4 @@
+<% form_for Asset.new, :html => { :multipart => true } do |form| %>
+  <%= form.file_field :upload, :multiple => true %>
+  <%= submit_tag 'upload' %>
+<% end %>

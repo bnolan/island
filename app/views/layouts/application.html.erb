@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Island</title>
+  <%= stylesheet_link_tag :all %>
+  <%= include_stylesheets :web, :media => 'screen' %>
+  <%= include_javascripts :web, :web_templates %>
+  <%= csrf_meta_tag %>
+
+  <style>
+    html,body{
+      overflow: hidden;
+    }
+    
+    body{
+      font-family: 'arial rounded mt bold';
+    }
+    
+    input[multiple]{
+      border: 5px dashed #ccc;
+      -webkit-border-radius: 10px;
+      width: 500px;
+      height: 500px;
+    }
+    
+    canvas{
+    }
+    
+    .player{
+      position: absolute;
+    }
+
+    .player *{
+      position: absolute;
+    }
+    
+    #playfield{
+      position: relative;
+    }
+    
+    #playfield *{
+      -moz-user-select: none;
+      -webkit-user-select: none;
+    }
+    
+    .tile{
+      position: absolute;
+    }
+    
+    .tile label{
+      position: absolute;
+      left: 10px;
+      top: 60px;
+      font-size: x-small;
+      -webkit-border-radius: 10px;
+      background: white;
+      padding: 5px 10px;
+      color: #555;
+      opacity: 0.5;
+      display: none;
+    }
+
+    .tile .shadow{
+      position: absolute;
+      left: 0;
+    }
+    
+    .toolbox{
+      background: #eee;
+      border: 3px solid #ccc;
+      -webkit-box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+      -webkit-border-radius: 10px;
+      width: 240px;
+      height: 500px;
+      right: 30px;
+      top: 30px;
+      position: absolute;
+      z-index: 1000;
+    }
+    
+    .toolbox img{
+      width: 32px;
+      padding: 5px 5px 8px 5px;
+      -webkit-border-radius: 3px;
+      display: block;
+      float: left;
+    }
+    
+    .toolbox img.selected{
+      background: #f70;
+    }
+  </style>
+  
+  <script>
+    $ASSETS = <%= Asset.all.to_json(:methods => [:upload_url]).html_safe %>
+  </script>
+</head>
+<body>
+
+
+<p class="notice"><%= notice %></p>
+<p class="alert"><%= alert %></p>
+
+
+<%= yield %>
+
+<div id="playfield">
+</div>
+
+</body>
+</html>

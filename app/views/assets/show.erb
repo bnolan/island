@@ -1,0 +1,40 @@
+<p class="breadcrumbs">
+  <%= link_to "Assets", assets_url %> &gt; <%= @asset.name %>
+</p>
+
+<h1><%= @asset.name %></h1>
+
+<ul class="actions">
+  <li><%= link_to 'Delete', @asset, :method => :delete %></li>
+</ul>
+
+<% form_for @asset do |f| %>
+
+  <div class="f">
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </div>
+
+  <div class="f">
+    <%= f.label :description %>
+    <%= f.text_field :description %>
+  </div>
+
+  <% [:height_north, :height_east, :height_south, :height_west].each do |field| %>
+    <div class="f">
+      <%= f.label field %>
+      <%= f.text_field field %>
+    </div>
+  <% end %>
+
+
+  <div class="f">
+    <%= f.label :upload %>
+    <% if @asset.image? %>
+      <%= link_to image_tag(@asset.upload.url), @asset %>
+    <% end %>
+  </div>
+
+  <%= submit_tag 'SAVE' %> or <%= link_to 'cancel', assets_url %>
+
+<% end %>
