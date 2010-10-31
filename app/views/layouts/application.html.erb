@@ -93,6 +93,7 @@
   
   <script>
     $ASSETS = <%= Asset.all.to_json(:methods => [:upload_url]).html_safe %>
+    $MAP = <%= Stack.all.to_json.html_safe %>
   </script>
 </head>
 <body>

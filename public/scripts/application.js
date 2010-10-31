@@ -1,6 +1,6 @@
 (function() {
-  var Application, Asset, Assets, Model, Player, Stack, Tile, Vector;
-  var __extends = function(child, parent) {
+  var Application, Asset, Assets, Map, Model, Stack, Tile;
+  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
     function ctor() { this.constructor = child; }
     ctor.prototype = parent.prototype;
     child.prototype = new ctor;
@@ -11,6 +11,56 @@
   };
   Math.clamp = function(v, min, max) {
     return Math.min(Math.max(min, v), max);
+  };
+  Map = (function() {
+    function Map() {
+      this.stacks = {};
+      return this;
+    }
+    return Map;
+  })();
+  Map.prototype.get = function(x, y) {
+    var index;
+    index = "" + x + "," + y;
+    if (!this.stacks[index]) {
+      this.stacks[index] = new Stack(this, x, y);
+    }
+    return this.stacks[index];
+  };
+  Map.prototype.save = function() {
+    return $.ajax({
+      url: '/map',
+      type: 'POST',
+      dataType: 'json',
+      data: this.toJSON()
+    });
+  };
+  Map.prototype.empty = function() {
+    return this.stacks = {};
+  };
+  Map.prototype.refresh = function(collection) {
+    var _i, _len, _result, stack;
+    this.empty();
+    _result = [];
+    for (_i = 0, _len = collection.length; _i < _len; _i++) {
+      stack = collection[_i];
+      _result.push(this.get(stack.x, stack.y).set(stack));
+    }
+    return _result;
+  };
+  Map.prototype.toJSON = function() {
+    var _ref, index, params, stack;
+    params = {};
+    for (index in _ref = this.stacks) {
+      if (!__hasProp.call(_ref, index)) continue;
+      stack = _ref[index];
+      if (!stack.isEmpty()) {
+        params[index] = stack.toJSON();
+      }
+    }
+    return {
+      stacks: params
+    };
   };
   Model = (function() {
     function Model() {
@@ -39,7 +89,7 @@
       this.gridWidth = 100;
       this.gridHeight = 80;
       this.div = $("<div />").addClass('tile');
-      $("<img />").attr('src', this.asset.getImageUrl()).appendTo(this.div);
+      this.img = $("<img />").attr('src', this.asset.getImageUrl()).appendTo(this.div);
       return this;
     }
     return Tile;
@@ -64,7 +114,7 @@
     _result = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       stack = _ref[_i];
-      _result.push(stack.getTop().redrawShadows());
+      _result.push(stack.redrawShadows());
     }
     return _result;
   };
@@ -82,7 +132,10 @@
           top: -40
         }).appendTo(this.div);
       }
-      return this.stack.northernNeighbour() && (this.stack.northernNeighbour().stackingHeight() > this.stack.stackingHeight()) ? $("<img />").addClass('shadow').attr('src', '/images/shadows/north.png').appendTo(this.div) : void 0;
+      if (this.stack.northernNeighbour() && (this.stack.northernNeighbour().stackingHeight() > this.stack.stackingHeight())) {
+        $("<img />").addClass('shadow').attr('src', '/images/shadows/north.png').appendTo(this.div);
+      }
+      return this.stack.northWesternNeighbour() && (this.stack.northWesternNeighbour().stackingHeight() > this.stack.stackingHeight()) ? $("<img />").addClass('shadow').attr('src', '/images/shadows/northwest.png').appendTo(this.div) : void 0;
     }
   };
   Tile.prototype.getHeight = function(x, y) {
@@ -106,6 +159,11 @@
     }
     return true;
   };
+  Tile.prototype.toJSON = function() {
+    return {
+      asset_id: this.asset.id
+    };
+  };
   Stack = (function() {
     function Stack(map, x, y) {
       this.map = map;
@@ -116,13 +174,40 @@
     }
     return Stack;
   })();
+  Stack.prototype.set = function(params) {
+    var _i, _len, _ref, id;
+    this.tiles = [];
+    _ref = params.tiles.split(",");
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      id = _ref[_i];
+      this.newTile(Assets.get(id));
+    }
+    return this.redraw();
+  };
+  Stack.prototype.redraw = function() {};
   Stack.prototype.height = function(x, y) {
-    x = (x - this.x * 100) / 100;
-    y = (y - this.y * 100) / 100;
-    return (this.tiles.length - 1) * 40 + this.getTop().getHeight(x, y);
+    if (this.isEmpty()) {
+      return 0;
+    } else {
+      x = (x - this.x * 100) / 100;
+      y = (y - this.y * 100) / 100;
+      return (this.tiles.length - 1) * 40 + this.getTop().getHeight(x, y);
+    }
+  };
+  Stack.prototype.toJSON = function() {
+    return {
+      x: this.x,
+      y: this.y,
+      tiles: _(this.tiles).invoke('toJSON')
+    };
+  };
+  Stack.prototype.redrawShadows = function() {
+    if (this.isEmpty()) {} else {
+      return this.getTop().redrawShadows();
+    }
   };
   Stack.prototype.stackingHeight = function() {
-    return this.tiles.length * 40;
+    return this.isEmpty() ? 0 : this.tiles.length * 40;
   };
   Stack.prototype.push = function(tile) {
     this.tiles.push(tile);
@@ -134,7 +219,7 @@
     return this.push(tile);
   };
   Stack.prototype.getTop = function() {
-    return this.tiles[this.tiles.length - 1];
+    return this.isEmpty() ? null : this.tiles[this.tiles.length - 1];
   };
   Stack.prototype.pop = function(tile) {
     return this.tiles.pop();
@@ -148,152 +233,20 @@
   Stack.prototype.northernNeighbour = function() {
     return this.getNeighbour(this.x, this.y - 1);
   };
+  Stack.prototype.northWesternNeighbour = function() {
+    return this.getNeighbour(this.x - 1, this.y - 1);
+  };
   Stack.prototype.southernNeighbour = function() {
     return this.getNeighbour(this.x, this.y + 1);
   };
   Stack.prototype.getNeighbour = function(x, y) {
-    return this.map["" + x + "," + y];
+    return this.map.get(x, y);
   };
   Stack.prototype.getNeighbours = function() {
-    return _.compact([this.getNeighbour(this.x - 1, y), this.getNeighbour(this.x, y - 1), this.getNeighbour(this.x, y + 1), this.getNeighbour(this.x + 1, y)]);
+    return _.compact([this.getNeighbour(this.x - 1, y - 1), this.getNeighbour(this.x, y - 1), this.getNeighbour(this.x + 1, y - 1), this.getNeighbour(this.x + 1, y), this.getNeighbour(this.x + 1, y + 1), this.getNeighbour(this.x, y + 1), this.getNeighbour(this.x - 1, y + 1), this.getNeighbour(this.x - 1, y)]);
   };
-  Stack.prototype.save = function() {
-    var _i, _len, _ref, _result, tile;
-    _ref = this.tiles;
-    _result = [];
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      tile = _ref[_i];
-      _result.push(tile.save());
-    }
-    return _result;
-  };
-  Vector = (function() {
-    function Vector(x, y, z) {
-      this.x = x || 0;
-      this.y = y || 0;
-      this.z = z || 0;
-      return this;
-    }
-    return Vector;
-  })();
-  Vector.prototype.add = function(v) {
-    return new Vector(this.x + v.x, this.y + v.y, this.z + v.z);
-  };
-  Player = (function() {
-    function Player() {
-      this.div = $("<div />").addClass('player');
-      this.avatar = $("<img />").attr('src', '/system/uploads/34/original/boy.png?1288307760').addClass('avatar').appendTo(this.div);
-      this.shadow = $("<img />").attr('src', '/system/uploads/35/original/shadow.png?1288308096').addClass('shadow').appendTo(this.div);
-      this.velocity = new Vector(0, 0, 0);
-      this.position = new Vector(150, 120, 50);
-      this.radius = new Vector(10, 4, 0);
-      this.draw();
-      this.dead = false;
-      return this;
-    }
-    return Player;
-  })();
-  Player.prototype.deathBy = function(sender) {
-    this.dead = true;
-    return app.playerDied("FROM STANDING ON THE DEADLY " + (sender.asset.get('name')));
-  };
-  Player.prototype.tick = function() {
-    var oldPosition, tile, vacc, vdamp, vmax;
-    if (this.dead) {
-      return;
-    }
-    oldPosition = this.position;
-    this.position = this.position.add(this.velocity);
-    tile = this.getTile();
-    if (tile) {
-      if (tile.isDeadly() && this.groundContact()) {
-        this.deathBy(tile);
-      }
-    }
-    if (this.position.y <= 0 + this.radius.y) {
-      this.position.y = 0 + this.radius.y;
-      this.velocity.y = 0;
-    }
-    if (this.position.x <= 0 + this.radius.x) {
-      this.position.x = 0 + this.radius.x;
-      this.velocity.x = 0;
-    }
-    if (this.position.y >= 1000 - this.radius.y) {
-      this.position.y = 1000 - this.radius.y;
-      this.velocity.y = 0;
-    }
-    if (this.groundContact()) {
-      this.velocity.z = 0;
-      this.position.z = this.groundHeight();
-    } else {
-      this.velocity.z -= 1;
-    }
-    vacc = 1.5;
-    vdamp = 0.8;
-    vmax = 6;
-    if (this.groundContact()) {
-      if ($.keys[$.keyCodes.LEFT]) {
-        this.velocity.x -= vacc;
-      } else if ($.keys[$.keyCodes.RIGHT]) {
-        this.velocity.x += vacc;
-      } else {
-        this.velocity.x *= vdamp;
-      }
-      if ($.keys[$.keyCodes.UP]) {
-        this.velocity.y -= vacc;
-      } else if ($.keys[$.keyCodes.DOWN]) {
-        this.velocity.y += vacc;
-      } else {
-        this.velocity.y *= vdamp;
-      }
-      if ($.keys[$.keyCodes.SPACE]) {
-        this.velocity.z = 10;
-        this.position.z += 1;
-      }
-    }
-    this.velocity.x = Math.clamp(this.velocity.x, -vmax, vmax);
-    this.velocity.y = Math.clamp(this.velocity.y, -vmax, vmax);
-    return this.velocity.z = Math.clamp(this.velocity.z, -20, 20);
-  };
-  Player.prototype.groundContact = function() {
-    return this.position.z <= this.groundHeight();
-  };
-  Player.prototype.altitude = function() {
-    return this.position.z;
-  };
-  Player.prototype.draw = function() {
-    var altitude, height;
-    if (this.div.parent().length === 0) {
-      this.div.appendTo('#playfield').hide().fadeIn();
-    }
-    height = 120;
-    altitude = this.altitude();
-    this.div.css({
-      top: this.position.y,
-      left: this.position.x,
-      'z-index': parseInt(this.position.y + altitude) + 10
-    });
-    this.avatar.css({
-      top: 0 - altitude - height - 15,
-      left: -50
-    });
-    return this.shadow.css({
-      top: 0 - this.groundHeight() - 20,
-      left: -25
-    });
-  };
-  Player.prototype.getTile = function() {
-    return this.getStack() && this.getStack().getTop();
-  };
-  Player.prototype.getStack = function() {
-    var index, x, y;
-    x = Math.floor(this.position.x / 100);
-    y = Math.floor(this.position.y / 80);
-    index = "" + x + "," + y;
-    return (typeof app !== "undefined" && app !== null) && app.map[index];
-  };
-  Player.prototype.groundHeight = function() {
-    return this.getStack() ? this.getStack().height(this.position.x, this.position.y) : 0;
+  Stack.prototype.isEmpty = function() {
+    return this.tiles.length === 0;
   };
   Application = (function() {
     function Application() {
@@ -301,7 +254,6 @@
       _this = this;
       this.onclick = function() { return Application.prototype.onclick.apply(_this, arguments); };
       this.tick = function() { return Application.prototype.tick.apply(_this, arguments); };
-      this.map = {};
       this.gridWidth = 100;
       this.gridHeight = 80;
       this.canvasWidth = $(document).width();
@@ -309,6 +261,8 @@
       this.el = $("<canvas />").attr('width', this.canvasWidth).attr('height', this.canvasHeight).appendTo('#playfield');
       this.ctx = this.el[0].getContext('2d');
       this.draw();
+      this.map = new Map;
+      this.map.refresh($MAP);
       this.player = new Player;
       setInterval(this.tick, 33);
       $.keys = {};
@@ -375,7 +329,7 @@
   };
   Application.prototype.addTile = function(x, y) {
     index = "" + x + "," + y;
-    stack = this.map[index] ? this.map[index] : this.map[index] = new Stack(this.map, x, y);
+    stack = this.map.get(x, y);
     asset = Assets.get($("img.selected").attr('data-id'));
     return stack.newTile(asset);
   };
@@ -391,6 +345,7 @@
       this.ctx.moveTo(x * this.gridWidth, 0);
       this.ctx.lineTo(x * this.gridWidth, h);
     }
+    this.ctx.strokeStyle = "#999";
     this.ctx.closePath();
     return this.ctx.stroke();
   };

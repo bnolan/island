@@ -1,6 +1,45 @@
 Math.clamp = (v, min, max) ->
   Math.min(Math.max(min, v), max)
 
+class Map
+  constructor: ->
+    @stacks = {}
+
+  get: (x,y) ->
+    index = "#{x},#{y}"
+
+    if not @stacks[index]
+      @stacks[index] = new Stack(this, x, y)
+
+    @stacks[index]
+
+  save: ->
+    $.ajax {
+      url : '/map'
+      type : 'POST'
+      dataType : 'json'
+      data : @toJSON()
+    }
+
+  empty: ->
+    @stacks = {}
+    
+  refresh: (collection) ->
+    @empty()
+    
+    for stack in collection
+      @get(stack.x, stack.y).set(stack)
+    
+  toJSON: ->
+    params = {}
+
+    for index, stack of @stacks when not stack.isEmpty()
+      params[index] = stack.toJSON()
+
+    {
+      stacks : params
+    }
+
 class Model
   constructor: ->
     Backbone.Model.apply(this, arguments)
@@ -15,7 +54,6 @@ class Asset extends Model
 Assets = new Backbone.Collection
 Assets.model = Asset
 
-
 class Tile
   constructor: (stack, asset) ->
     @stack = stack
@@ -25,7 +63,7 @@ class Tile
     @gridHeight = 80
 
     @div = $("<div />").addClass 'tile'
-    $("<img />").attr('src', @asset.getImageUrl()).appendTo @div
+    @img = $("<img />").attr('src', @asset.getImageUrl()).appendTo @div
     
   draw: ->
     x = @stack.x
@@ -50,7 +88,7 @@ class Tile
     @redrawShadows()
     
     for stack in @stack.getNeighbours()
-      stack.getTop().redrawShadows()
+      stack.redrawShadows()
     
   redrawShadows: ->
     if @drawShadow()
@@ -67,6 +105,9 @@ class Tile
 
       if @stack.northernNeighbour() and (@stack.northernNeighbour().stackingHeight() > @stack.stackingHeight())
         $("<img />").addClass('shadow').attr('src', '/images/shadows/north.png').appendTo @div
+
+      if @stack.northWesternNeighbour() and (@stack.northWesternNeighbour().stackingHeight() > @stack.stackingHeight())
+        $("<img />").addClass('shadow').attr('src', '/images/shadows/northwest.png').appendTo @div
     
   # x and y are in local coordinate space between 0 and 1
   getHeight: (x,y) ->
@@ -93,6 +134,11 @@ class Tile
 
     true
     
+  toJSON: ->
+    {
+      asset_id : @asset.id
+    }
+    
 class Stack
   constructor: (map, x,y) ->
     @map = map
@@ -100,16 +146,46 @@ class Stack
     @x = x
     @y = y
     
+  set: (params) ->
+    @tiles = []
+    
+    for id in params.tiles.split(",")
+      @newTile Assets.get(id)
+
+    @redraw()
+    
+  redraw: ->
+    # ....
+    
   # x and y are in world coordinates
   height: (x,y) ->
-    x = (x - @x * 100) / 100
-    y = (y - @y * 100) / 100
+    if @isEmpty()
+      0
+    else
+      x = (x - @x * 100) / 100
+      y = (y - @y * 100) / 100
     
-    (@tiles.length - 1) * 40 + @getTop().getHeight(x, y)
+      (@tiles.length - 1) * 40 + @getTop().getHeight(x, y)
 
+  toJSON: ->
+    {
+      x : @x
+      y : @y
+      tiles : _(@tiles).invoke('toJSON')
+    }
+    
+  redrawShadows: ->
+    if @isEmpty()
+      # ...
+    else
+      @getTop().redrawShadows()
+      
   # Used for tiles stacking algorithm - height and stackingHeight need refactoring...
   stackingHeight: ->
-    @tiles.length * 40
+    if @isEmpty()
+      0
+    else
+      @tiles.length * 40
     
   push: (tile) ->
     @tiles.push tile
@@ -120,7 +196,10 @@ class Stack
     @push tile
     
   getTop: ->
-    @tiles[@tiles.length - 1]
+    if @isEmpty()
+      null
+    else
+      @tiles[@tiles.length - 1]
     
   pop: (tile) ->
     @tiles.pop()
@@ -134,166 +213,32 @@ class Stack
   northernNeighbour: ->
     @getNeighbour @x, @y - 1
 
+  northWesternNeighbour: ->
+    @getNeighbour @x - 1, @y - 1
+
   southernNeighbour: ->
     @getNeighbour @x, @y + 1
 
   getNeighbour: (x,y) ->
-    @map["#{x},#{y}"]
+    @map.get(x,y)
 
   getNeighbours: ->
     _.compact [
-      @getNeighbour(@x - 1, y),
+      @getNeighbour(@x - 1, y - 1),
       @getNeighbour(@x, y - 1),
+      @getNeighbour(@x + 1, y - 1),
+      @getNeighbour(@x + 1, y),
+      @getNeighbour(@x + 1, y + 1),
       @getNeighbour(@x, y + 1),
-      @getNeighbour(@x + 1, y)
+      @getNeighbour(@x - 1, y + 1),
+      @getNeighbour(@x - 1, y)
     ]
     
-  save: ->
-    for tile in @tiles
-      tile.save()
-    # ...
-  
-class Vector
-  constructor: (x,y,z) ->
-    @x = x || 0
-    @y = y || 0
-    @z = z || 0
-    
-  add: (v) ->
-    new Vector(@x + v.x, @y + v.y, @z + v.z)
-    
-class Player
-  constructor: ->
-    @div = $("<div />").addClass('player')
-    
-    @avatar = $("<img />").attr('src', '/system/uploads/34/original/boy.png?1288307760').addClass('avatar').appendTo @div
-    @shadow = $("<img />").attr('src', '/system/uploads/35/original/shadow.png?1288308096').addClass('shadow').appendTo @div
-    
-    @velocity = new Vector(0,0,0)
-    @position = new Vector(150,120,50)
-    @radius = new Vector(10, 4, 0)
-    
-    @draw()
-    
-    @dead = false
-    
-  deathBy: (sender) ->
-    @dead = true
-    
-    app.playerDied("FROM STANDING ON THE DEADLY #{sender.asset.get('name')}")
-    
-  tick: ->
-    if @dead
-      return
-      
-    oldPosition = @position
-    
-    @position = @position.add(@velocity)
-
-    # Tile!
-    
-    tile = @getTile()
-    
-    if tile
-      if tile.isDeadly() and @groundContact()
-        @deathBy tile
-    
-    if @position.y <= 0 + @radius.y
-      @position.y = 0 + @radius.y
-      @velocity.y = 0
-
-    if @position.x <= 0 + @radius.x
-      @position.x = 0 + @radius.x
-      @velocity.x = 0
-
-    if @position.y >= 1000 - @radius.y
-      @position.y = 1000 - @radius.y
-      @velocity.y = 0
-      
-    if @groundContact()
-      @velocity.z = 0
-      @position.z = @groundHeight()
-    else
-      @velocity.z -= 1
-
-    vacc = 1.5
-    vdamp = 0.8
-    vmax = 6
-
-    if @groundContact()
-      if $.keys[$.keyCodes.LEFT]
-        @velocity.x -= vacc
-      else if $.keys[$.keyCodes.RIGHT]
-        @velocity.x += vacc
-      else
-        @velocity.x *= vdamp
-
-      if $.keys[$.keyCodes.UP]
-        @velocity.y -= vacc
-      else if $.keys[$.keyCodes.DOWN]
-        @velocity.y += vacc
-      else
-        @velocity.y *= vdamp 
-
-      # Give a slight bump off the ground so we don't get stuck
-      if $.keys[$.keyCodes.SPACE]
-        @velocity.z = 10
-        @position.z += 1
-
-    @velocity.x = Math.clamp(@velocity.x, -vmax, vmax)
-    @velocity.y = Math.clamp(@velocity.y, -vmax, vmax)
-    @velocity.z = Math.clamp(@velocity.z, -20, 20)
-    
-  groundContact: ->
-    @position.z <= @groundHeight()
-    
-  altitude: ->
-    @position.z
-    
-  draw: ->
-    if @div.parent().length==0
-      @div.appendTo('#playfield').hide().fadeIn()
-
-    height = 120
-    altitude = @altitude()
-    
-    @div.css {
-      top : @position.y
-      left : @position.x
-      'z-index' : parseInt(@position.y + altitude) + 10
-    }
-    
-    @avatar.css { 
-      top : 0 - altitude - height - 15
-      left : -50
-    }
-    @shadow.css { 
-      top :  0 - @groundHeight()  - 20
-      left : -25
-    }
-
-  getTile: ->
-    @getStack() && @getStack().getTop()
-    
-  getStack: ->
-    x = Math.floor(@position.x / 100)
-    y = Math.floor(@position.y / 80)
-    
-    index = "#{x},#{y}"
-
-    app? && app.map[index]
-    
-  groundHeight: ->
-    if @getStack()
-      @getStack().height(@position.x, @position.y)
-    else
-      0
+  isEmpty: ->
+    @tiles.length == 0
     
 class Application
   constructor: ->
-
-    @map = {}
-    
     @gridWidth = 100
     @gridHeight = 80
     
@@ -305,6 +250,9 @@ class Application
     @ctx = @el[0].getContext '2d'
     
     @draw()
+    
+    @map = new Map
+    @map.refresh $MAP
     
     @player = new Player
     
@@ -342,10 +290,7 @@ class Application
   addTile: (x,y) ->
     index = "#{x},#{y}"
     
-    stack = if @map[index]
-      @map[index]
-    else
-      @map[index] = new Stack(@map, x, y)
+    stack = @map.get(x,y)
 
     asset = Assets.get $("img.selected").attr('data-id')
     
@@ -365,6 +310,7 @@ class Application
       @ctx.moveTo x * @gridWidth, 0
       @ctx.lineTo x * @gridWidth, h
 
+    @ctx.strokeStyle = "#999";
     @ctx.closePath()
     @ctx.stroke()
       

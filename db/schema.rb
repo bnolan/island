@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101028231953) do
+ActiveRecord::Schema.define(:version => 20101031043052) do
 
   create_table "assets", :force => true do |t|
     t.string   "name"
@@ -25,6 +25,14 @@ ActiveRecord::Schema.define(:version => 20101028231953) do
     t.integer  "height_north"
     t.integer  "height_east"
     t.integer  "height_south"
+  end
+
+  create_table "stacks", :force => true do |t|
+    t.integer  "x"
+    t.integer  "y"
+    t.string   "tiles"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "tiles", :force => true do |t|
