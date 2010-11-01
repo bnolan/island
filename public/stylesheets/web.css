@@ -1,0 +1,40 @@
+html,body{
+  background: white;
+  margin: 0;
+  padding: 0;
+}
+
+body{
+  font-family: 'arial rounded mt bold';
+}
+
+input[multiple]{
+  border: 5px dashed #ccc;
+  -webkit-border-radius: 10px;
+  width: 500px;
+  height: 500px;
+}
+
+#header{
+  margin: 30px 0;
+  padding-bottom: 30px;
+  border-bottom: 1px solid #f07;
+}
+
+#footer{
+  font-family: arial;
+  font-size: 12px;
+  text-align: center;
+  color: #777;
+  margin: 30px 0;
+  border-top: 1px solid #ccc;
+  padding-top: 30px;
+}
+#footer a{
+  color: #777;
+}
+
+#wrapper{
+  width: 800px;
+  margin: auto;
+}

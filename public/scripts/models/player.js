@@ -6,8 +6,8 @@
       this.avatar = $("<img />").attr('src', '/system/uploads/34/original/boy.png?1288307760').addClass('avatar').appendTo(this.div);
       this.shadow = $("<img />").attr('src', '/images/shadows/player.png').addClass('shadow').appendTo(this.div);
       this.velocity = new Vector(0, 0, 0);
-      this.position = new Vector(150, 120, 50);
-      this.radius = new Vector(20, 10, 0);
+      this.position = new Vector(250, 360, 150);
+      this.radius = new Vector(30, 10, 0);
       this.jumpTimer = 10;
       this.draw();
       this.dead = false;
@@ -17,10 +17,26 @@
   })();
   Player.prototype.deathBy = function(sender) {
     this.dead = true;
-    return app.playerDied("FROM STANDING ON THE DEADLY " + (sender.asset.get('name')));
+    if (sender instanceof Tile) {
+      if (sender.isWater()) {
+        this.div.addClass('drowned');
+        app.playerDied("from falling in the water. You must have forgotten your mom never taught you to swim.");
+      }
+      if (sender.isLava()) {
+        this.div.addClass('drowned');
+        app.playerDied("from trying to swim in the deadly molten lava.");
+      }
+    }
+    if (sender === "falling") {
+      this.div.animate({
+        opacity: 0,
+        'margin-top': 50
+      }, 200);
+      return app.playerDied("from falling to the unknown regions far far below.");
+    }
   };
   Player.prototype.tick = function() {
-    var groundHeight, oldPosition, stepHeight, tile, vacc, vdamp, vmax;
+    var groundHeight, margin, oldPosition, playfieldWidth, stepHeight, tile, vacc, vdamp, vmax;
     if (this.dead) {
       return;
     }
@@ -34,12 +50,24 @@
       this.position = oldPosition;
       this.velocity.x = 0;
     }
-    if (this.position.y >= 1000 - this.radius.y) {
+    if (this.position.y >= 800 - this.radius.y) {
       this.position = oldPosition;
       this.velocity.y = 0;
     }
+    margin = 100;
+    playfieldWidth = $('#playfield-container').width();
+    if (this.position.x + parseInt($("#playfield").css('left')) > playfieldWidth - margin) {
+      $("#playfield").stop().animate({
+        left: -this.position.x + margin * 2
+      });
+    }
+    if (this.position.x + parseInt($("#playfield").css('left')) < margin) {
+      $("#playfield").stop().animate({
+        left: playfieldWidth - margin * 2 - this.position.x
+      });
+    }
     tile = this.getTile();
-    stepHeight = 5;
+    stepHeight = 15;
     groundHeight = app.map.getHeightByRadius(this.position, this.radius);
     if (tile && (tile.isRamp())) {
       groundHeight = app.map.getHeightByPoint(this.position);
@@ -52,6 +80,9 @@
       this.velocity.z = 0;
     } else {
       this.velocity.z -= 1;
+    }
+    if (this.position.z < -100) {
+      this.deathBy('falling');
     }
     if (tile) {
       if (tile.isDeadly() && this.groundContact()) {

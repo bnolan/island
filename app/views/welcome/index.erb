@@ -1,9 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Island</title>
+  <%= include_stylesheets :game, :media => 'screen' %>
+  <%= include_javascripts :web, :web_templates %>
+  <%= csrf_meta_tag %>
+</head>
+<body>
 
+<div id="header">
+  
+  
+  <ul class="menubar">
+    <li><%= link_to "Home", root_url %></li>
+    <li>
+      <%= link_to "Assets", assets_url %>
+      <ul>
+        <li><%= link_to "Upload new", new_asset_url %></li>
+      </ul>
+    </li>
+  </ul>
+  
+</div>
+
+<p class="notice"><%= notice %></p>
+<p class="alert"><%= alert %></p>
 
 <div class="toolbox">
   <% Asset.all.each do |asset| %>
-    <% if asset.image? %>
-      <%= link_to image_tag(asset.upload.url, { 'data-id' => asset.id } ), asset %>
-    <% end %>
+    <div class="asset" data-id="<%= asset.id %>">
+      <h3><%= asset.name %></h3>
+      <% if asset.image? %>
+        <%= image_tag(asset.upload.url) %>
+      <% end %>
+      <p class="description">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+    </div>
   <% end %>
 </div>
+
+<div id="playfield-container">
+  <div id="playfield">
+    
+    <div class="menu">
+      <div class="chevron">&diams;</div>
+
+      <p class="name">Heart</p>
+      <p class="description">Hearts give you 5 health.</p>
+      
+      <ul>
+        <li>Pick up</li>
+        <li>Push</li>
+      </ul>
+    </div>
+    
+  </div>
+</div>
+
+<script>
+
+  $ASSETS = <%= Asset.all.to_json(:methods => [:upload_url]).html_safe %>;
+  $MAP = <%= Stack.all.to_json.html_safe %>;
+
+  $(document).ready(function(){
+    app = new Application;
+  });
+
+</script>
+
+<div id="footer">questions and comments to @<a href="http://twitter.com/captainbenis/">captainbenis</a></div>
+
+</body>
+</html>

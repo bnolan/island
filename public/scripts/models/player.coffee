@@ -6,8 +6,8 @@ class Player
     @shadow = $("<img />").attr('src', '/images/shadows/player.png').addClass('shadow').appendTo @div
     
     @velocity = new Vector(0,0,0)
-    @position = new Vector(150,120,50)
-    @radius = new Vector(20, 10, 0)
+    @position = new Vector(250,360,150)
+    @radius = new Vector(30, 10, 0)
 
     # Pause between subsequent jumps
     @jumpTimer = 10
@@ -19,7 +19,18 @@ class Player
   deathBy: (sender) ->
     @dead = true
     
-    app.playerDied("FROM STANDING ON THE DEADLY #{sender.asset.get('name')}")
+    if sender instanceof Tile
+      if sender.isWater()
+        @div.addClass 'drowned'
+        app.playerDied("from falling in the water. You must have forgotten your mom never taught you to swim.")
+
+      if sender.isLava()
+        @div.addClass 'drowned'
+        app.playerDied("from trying to swim in the deadly molten lava.")
+    
+    if sender == "falling"
+      @div.animate { opacity : 0, 'margin-top' : 50 }, 200
+      app.playerDied("from falling to the unknown regions far far below.")
     
   tick: ->
     if @dead
@@ -39,17 +50,30 @@ class Player
       @position = oldPosition
       @velocity.x = 0
 
-    if @position.y >= 1000 - @radius.y
+    if @position.y >= 800 - @radius.y
       @position = oldPosition
       @velocity.y = 0
     
+    # Test for need to scroll map
+    
+    margin = 100
+    playfieldWidth = $('#playfield-container').width()
+    
+    if @position.x + parseInt($("#playfield").css('left')) > playfieldWidth - margin
+      $("#playfield").stop().animate { left : - @position.x + margin * 2 }
+
+    if @position.x + parseInt($("#playfield").css('left')) < margin
+      $("#playfield").stop().animate { left : playfieldWidth - margin * 2 - @position.x }
+      
     # Test for intersecting a tile
 
     tile = @getTile()
-    stepHeight = 5
+    stepHeight = 15 # Arbitrarily high to try and make sloped tiles work. Need to refactor
+                    # around sloped tiles..
+                    
     groundHeight = app.map.getHeightByRadius(@position, @radius)
 
-    # The collision detection goes fault on sloped tiles
+    # The collision detection goes faulty on sloped tiles
     if (tile) && (tile.isRamp())
       groundHeight = app.map.getHeightByPoint(@position)
       
@@ -65,6 +89,11 @@ class Player
       # Falling
       @velocity.z -= 1
 
+    # Check for death states
+    
+    if @position.z < -100
+      @deathBy 'falling'
+      
     if tile
       if tile.isDeadly() and @groundContact()
         @deathBy tile

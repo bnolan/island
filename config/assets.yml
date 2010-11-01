@@ -27,7 +27,6 @@ javascripts:
 
 stylesheets:
   web:
-    - public/stylesheets/aristo.css
     - public/stylesheets/web.css
-  iphone:
-    - public/stylesheets/pages/client.less
+  game:
+    - public/stylesheets/game.css
