@@ -7,5 +7,7 @@ class Vector
   add: (v) ->
     new Vector(@x + v.x, @y + v.y, @z + v.z)
 
+  subtract: (v) ->
+    new Vector(@x - v.x, @y - v.y, @z - v.z)
 
 this.Vector = Vector

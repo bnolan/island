@@ -15,6 +15,8 @@
   Map = (function() {
     function Map() {
       this.stacks = {};
+      this.gridWidth = 100;
+      this.gridHeight = 80;
       return this;
     }
     return Map;
@@ -26,6 +28,17 @@
       this.stacks[index] = new Stack(this, x, y);
     }
     return this.stacks[index];
+  };
+  Map.prototype.getHeightByRadius = function(position, radius) {
+    var height1, height2, pos1, pos2;
+    pos1 = position.add(radius);
+    pos2 = position.subtract(radius);
+    height1 = this.get(Math.floor(pos1.x / this.gridWidth), Math.floor(pos1.y / this.gridHeight)).height(pos1.x, pos1.y);
+    height2 = this.get(Math.floor(pos2.x / this.gridWidth), Math.floor(pos2.y / this.gridHeight)).height(pos2.x, pos2.y);
+    return Math.max(height1, height2);
+  };
+  Map.prototype.getHeightByPoint = function(position) {
+    return this.get(Math.floor(position.x / this.gridWidth), Math.floor(position.y / this.gridHeight)).height(position.x, position.y);
   };
   Map.prototype.save = function() {
     return $.ajax({
@@ -39,12 +52,17 @@
     return this.stacks = {};
   };
   Map.prototype.refresh = function(collection) {
-    var _i, _len, _result, stack;
+    var _i, _len, _ref, _result, index, stack;
     this.empty();
-    _result = [];
     for (_i = 0, _len = collection.length; _i < _len; _i++) {
       stack = collection[_i];
-      _result.push(this.get(stack.x, stack.y).set(stack));
+      this.get(stack.x, stack.y).set(stack);
+    }
+    _result = [];
+    for (index in _ref = this.stacks) {
+      if (!__hasProp.call(_ref, index)) continue;
+      stack = _ref[index];
+      _result.push(stack.redrawShadows());
     }
     return _result;
   };
@@ -127,15 +145,7 @@
       if (this.stack.easternNeighbour() && (this.stack.easternNeighbour().stackingHeight() > this.stack.stackingHeight())) {
         $("<img />").addClass('shadow').attr('src', '/images/shadows/east.png').appendTo(this.div);
       }
-      if (this.stack.northernNeighbour() && (this.stack.northernNeighbour().stackingHeight() < this.stack.stackingHeight())) {
-        $("<img />").addClass('shadow').attr('src', '/images/shadows/south.png?4').css({
-          top: -40
-        }).appendTo(this.div);
-      }
-      if (this.stack.northernNeighbour() && (this.stack.northernNeighbour().stackingHeight() > this.stack.stackingHeight())) {
-        $("<img />").addClass('shadow').attr('src', '/images/shadows/north.png').appendTo(this.div);
-      }
-      return this.stack.northWesternNeighbour() && (this.stack.northWesternNeighbour().stackingHeight() > this.stack.stackingHeight()) ? $("<img />").addClass('shadow').attr('src', '/images/shadows/northwest.png').appendTo(this.div) : void 0;
+      return this.stack.northernNeighbour() && (this.stack.northernNeighbour().stackingHeight() > this.stack.stackingHeight()) ? $("<img />").addClass('shadow').attr('src', '/images/shadows/north.png').appendTo(this.div) : void 0;
     }
   };
   Tile.prototype.getHeight = function(x, y) {

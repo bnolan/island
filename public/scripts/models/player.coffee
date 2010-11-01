@@ -3,11 +3,14 @@ class Player
     @div = $("<div />").addClass('player')
     
     @avatar = $("<img />").attr('src', '/system/uploads/34/original/boy.png?1288307760').addClass('avatar').appendTo @div
-    @shadow = $("<img />").attr('src', '/system/uploads/35/original/shadow.png?1288308096').addClass('shadow').appendTo @div
+    @shadow = $("<img />").attr('src', '/images/shadows/player.png').addClass('shadow').appendTo @div
     
     @velocity = new Vector(0,0,0)
     @position = new Vector(150,120,50)
-    @radius = new Vector(10, 4, 0)
+    @radius = new Vector(20, 10, 0)
+
+    # Pause between subsequent jumps
+    @jumpTimer = 10
     
     @draw()
     
@@ -26,36 +29,52 @@ class Player
     
     @position = @position.add(@velocity)
 
-    # Tile!
-    
-    tile = @getTile()
-    
-    if tile
-      if tile.isDeadly() and @groundContact()
-        @deathBy tile
+    # Test for out of bounds
     
     if @position.y <= 0 + @radius.y
-      @position.y = 0 + @radius.y
+      @position = oldPosition
       @velocity.y = 0
 
     if @position.x <= 0 + @radius.x
-      @position.x = 0 + @radius.x
+      @position = oldPosition
       @velocity.x = 0
 
     if @position.y >= 1000 - @radius.y
-      @position.y = 1000 - @radius.y
+      @position = oldPosition
       @velocity.y = 0
+    
+    # Test for intersecting a tile
+
+    tile = @getTile()
+    stepHeight = 5
+    groundHeight = app.map.getHeightByRadius(@position, @radius)
+
+    # The collision detection goes fault on sloped tiles
+    if (tile) && (tile.isRamp())
+      groundHeight = app.map.getHeightByPoint(@position)
       
-    if @groundContact()
+    if (groundHeight > @position.z + stepHeight)
+      # Too large to step
+      @position = oldPosition
+      @velocity = new Vector
+    else if (groundHeight >= @position.z)
+      # Small step up, or ground collision
+      @position.z = groundHeight
       @velocity.z = 0
-      @position.z = @groundHeight()
     else
+      # Falling
       @velocity.z -= 1
+
+    if tile
+      if tile.isDeadly() and @groundContact()
+        @deathBy tile
+
 
     vacc = 1.5
     vdamp = 0.8
     vmax = 6
-
+    @jumpTimer--
+    
     if @groundContact()
       if $.keys[$.keyCodes.LEFT]
         @velocity.x -= vacc
@@ -72,10 +91,11 @@ class Player
         @velocity.y *= vdamp 
 
       # Give a slight bump off the ground so we don't get stuck
-      if $.keys[$.keyCodes.SPACE]
+      if $.keys[$.keyCodes.SPACE] and @jumpTimer <= 0
+        @jumpTimer = 15
         @velocity.z = 10
         @position.z += 1
-        @avatar.css({ height : 120, width : 100, 'padding-top' : 50}).animate({ height : 170, width: 100, 'padding-top' : 0 })
+        @avatar.css({ height : 150, width : 100, 'padding-top' : 20}).animate({ height : 170, width: 100, 'padding-top' : 0 })
         
         # @avatar.css { '-webkit-transform' : 'rotate(90deg)' }
 

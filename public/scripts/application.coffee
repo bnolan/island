@@ -4,6 +4,8 @@ Math.clamp = (v, min, max) ->
 class Map
   constructor: ->
     @stacks = {}
+    @gridWidth = 100
+    @gridHeight = 80
 
   get: (x,y) ->
     index = "#{x},#{y}"
@@ -13,6 +15,21 @@ class Map
 
     @stacks[index]
 
+  # Returns the highest ground point in the given radius [vector] of the position [vector].
+  getHeightByRadius: (position, radius) ->
+
+    pos1 = position.add(radius)
+    pos2 = position.subtract(radius)
+    
+    height1 = @get(Math.floor(pos1.x / @gridWidth), Math.floor(pos1.y / @gridHeight)).height(pos1.x, pos1.y)
+    height2 = @get(Math.floor(pos2.x / @gridWidth), Math.floor(pos2.y / @gridHeight)).height(pos2.x, pos2.y)
+
+    Math.max(height1, height2)
+
+  # Returns the height at a point
+  getHeightByPoint: (position) ->
+    @get(Math.floor(position.x / @gridWidth), Math.floor(position.y / @gridHeight)).height(position.x, position.y)
+    
   save: ->
     $.ajax {
       url : '/map'
@@ -29,6 +46,9 @@ class Map
     
     for stack in collection
       @get(stack.x, stack.y).set(stack)
+
+    for index, stack of @stacks
+      stack.redrawShadows()
     
   toJSON: ->
     params = {}
@@ -100,14 +120,14 @@ class Tile
       if @stack.easternNeighbour() and (@stack.easternNeighbour().stackingHeight() > @stack.stackingHeight())
         $("<img />").addClass('shadow').attr('src', '/images/shadows/east.png').appendTo @div
 
-      if @stack.northernNeighbour() and (@stack.northernNeighbour().stackingHeight() < @stack.stackingHeight())
-        $("<img />").addClass('shadow').attr('src', '/images/shadows/south.png?4').css({ top : -40 }).appendTo @div
+      # if @stack.northernNeighbour() and (@stack.northernNeighbour().stackingHeight() < @stack.stackingHeight())
+      #   $("<img />").addClass('shadow').attr('src', '/images/shadows/south.png').css({ top : -40 }).appendTo @div
 
       if @stack.northernNeighbour() and (@stack.northernNeighbour().stackingHeight() > @stack.stackingHeight())
         $("<img />").addClass('shadow').attr('src', '/images/shadows/north.png').appendTo @div
 
-      if @stack.northWesternNeighbour() and (@stack.northWesternNeighbour().stackingHeight() > @stack.stackingHeight())
-        $("<img />").addClass('shadow').attr('src', '/images/shadows/northwest.png').appendTo @div
+      # if @stack.northWesternNeighbour() and (@stack.northWesternNeighbour().stackingHeight() > @stack.stackingHeight())
+      #   $("<img />").addClass('shadow').attr('src', '/images/shadows/northwest.png').appendTo @div
     
   # x and y are in local coordinate space between 0 and 1
   getHeight: (x,y) ->

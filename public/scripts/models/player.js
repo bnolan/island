@@ -4,10 +4,11 @@
     function Player() {
       this.div = $("<div />").addClass('player');
       this.avatar = $("<img />").attr('src', '/system/uploads/34/original/boy.png?1288307760').addClass('avatar').appendTo(this.div);
-      this.shadow = $("<img />").attr('src', '/system/uploads/35/original/shadow.png?1288308096').addClass('shadow').appendTo(this.div);
+      this.shadow = $("<img />").attr('src', '/images/shadows/player.png').addClass('shadow').appendTo(this.div);
       this.velocity = new Vector(0, 0, 0);
       this.position = new Vector(150, 120, 50);
-      this.radius = new Vector(10, 4, 0);
+      this.radius = new Vector(20, 10, 0);
+      this.jumpTimer = 10;
       this.draw();
       this.dead = false;
       return this;
@@ -19,39 +20,48 @@
     return app.playerDied("FROM STANDING ON THE DEADLY " + (sender.asset.get('name')));
   };
   Player.prototype.tick = function() {
-    var oldPosition, tile, vacc, vdamp, vmax;
+    var groundHeight, oldPosition, stepHeight, tile, vacc, vdamp, vmax;
     if (this.dead) {
       return;
     }
     oldPosition = this.position;
     this.position = this.position.add(this.velocity);
+    if (this.position.y <= 0 + this.radius.y) {
+      this.position = oldPosition;
+      this.velocity.y = 0;
+    }
+    if (this.position.x <= 0 + this.radius.x) {
+      this.position = oldPosition;
+      this.velocity.x = 0;
+    }
+    if (this.position.y >= 1000 - this.radius.y) {
+      this.position = oldPosition;
+      this.velocity.y = 0;
+    }
     tile = this.getTile();
+    stepHeight = 5;
+    groundHeight = app.map.getHeightByRadius(this.position, this.radius);
+    if (tile && (tile.isRamp())) {
+      groundHeight = app.map.getHeightByPoint(this.position);
+    }
+    if (groundHeight > this.position.z + stepHeight) {
+      this.position = oldPosition;
+      this.velocity = new Vector;
+    } else if (groundHeight >= this.position.z) {
+      this.position.z = groundHeight;
+      this.velocity.z = 0;
+    } else {
+      this.velocity.z -= 1;
+    }
     if (tile) {
       if (tile.isDeadly() && this.groundContact()) {
         this.deathBy(tile);
       }
     }
-    if (this.position.y <= 0 + this.radius.y) {
-      this.position.y = 0 + this.radius.y;
-      this.velocity.y = 0;
-    }
-    if (this.position.x <= 0 + this.radius.x) {
-      this.position.x = 0 + this.radius.x;
-      this.velocity.x = 0;
-    }
-    if (this.position.y >= 1000 - this.radius.y) {
-      this.position.y = 1000 - this.radius.y;
-      this.velocity.y = 0;
-    }
-    if (this.groundContact()) {
-      this.velocity.z = 0;
-      this.position.z = this.groundHeight();
-    } else {
-      this.velocity.z -= 1;
-    }
     vacc = 1.5;
     vdamp = 0.8;
     vmax = 6;
+    this.jumpTimer--;
     if (this.groundContact()) {
       if ($.keys[$.keyCodes.LEFT]) {
         this.velocity.x -= vacc;
@@ -67,13 +77,14 @@
       } else {
         this.velocity.y *= vdamp;
       }
-      if ($.keys[$.keyCodes.SPACE]) {
+      if ($.keys[$.keyCodes.SPACE] && this.jumpTimer <= 0) {
+        this.jumpTimer = 15;
         this.velocity.z = 10;
         this.position.z += 1;
         this.avatar.css({
-          height: 120,
+          height: 150,
           width: 100,
-          'padding-top': 50
+          'padding-top': 20
         }).animate({
           height: 170,
           width: 100,

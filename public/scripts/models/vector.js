@@ -12,5 +12,8 @@
   Vector.prototype.add = function(v) {
     return new Vector(this.x + v.x, this.y + v.y, this.z + v.z);
   };
+  Vector.prototype.subtract = function(v) {
+    return new Vector(this.x - v.x, this.y - v.y, this.z - v.z);
+  };
   this.Vector = Vector;
 }).call(this);
