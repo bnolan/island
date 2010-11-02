@@ -16,9 +16,19 @@ javascripts:
     - public/javascripts/backbone.js
     - public/javascripts/rails.js
 
-    - public/scripts/*.js
+    - public/scripts/web.js
     - public/scripts/**/*.js
 
+  game:
+    - public/javascripts/jquery.js
+    - public/javascripts/jquery-ui.js
+    - public/javascripts/underscore.js
+    - public/javascripts/backbone.js
+    - public/javascripts/rails.js
+
+    - public/scripts/*.js
+    - public/scripts/**/*.js
+    
   web_templates:
     - app/views/clients/web/**/*.jst
 

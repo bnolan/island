@@ -1,0 +1,22 @@
+
+<div class="f">
+  <%= f.label :name %>
+  <%= f.text_field :name %>
+</div>
+
+<div class="f">
+  <%= f.label :description %>
+  <%= f.text_area :description, :rows => 3 %>
+</div>
+
+<div class="f">
+  <%= f.label :asset %>
+  <%= f.select :asset_id, Asset.all.collect { |a| [a.name, a.id] } %>
+  <%= link_to image_tag(f.object.asset.upload.url, :width => 32, :style => 'position: absolute; margin-top: -20px'), f.object.asset %>
+</div>
+
+<div class="f">
+  <%= f.label :code, 'Behaviour' %>
+  <%= f.text_area :code, :rows => 10 %>
+</div>
+

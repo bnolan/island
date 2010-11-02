@@ -1,0 +1,16 @@
+<p class="breadcrumbs">
+  <%= link_to "Items", items_url %> &gt; <%= @item.name %>
+</p>
+
+<h1><%= @item.name %></h1>
+
+<dl>
+  <dt>Description</dt>
+  <dd><%= @item.description %></dd>
+  <dt>Location</dt>
+  <dd><%= @item.location %></dd>
+</dl>
+
+<ul class="actions">
+  <li><%= link_to 'Edit', edit_item_url(@item) %></li>
+</ul>

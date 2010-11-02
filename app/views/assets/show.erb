@@ -19,6 +19,11 @@
     <%= f.label :description %>
     <%= f.text_field :description %>
   </div>
+  
+  <div class="f">
+    <%= f.label :kind %>
+    <%= f.select :kind, Asset.kinds %>
+  </div>
 
   <% [:height_north, :height_east, :height_south, :height_west].each do |field| %>
     <div class="f">

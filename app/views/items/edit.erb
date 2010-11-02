@@ -1,0 +1,20 @@
+<p class="breadcrumbs">
+  <%= link_to "Items", items_url %> &gt; Edit <%= @item.name %>
+</p>
+
+<h1><%= @item.name %></h1>
+
+<ul class="actions">
+  <li><%= link_to 'Delete', @item, :method => :delete %></li>
+</ul>
+
+<% form_for @item do |f| %>
+
+  <%= render :partial => 'form', :locals => {:f => f} %>
+
+  <%= submit_tag 'SAVE' %> or <%= link_to 'cancel', :back %>
+
+<% end %>
+
+<div id="container">
+</div>

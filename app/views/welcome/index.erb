@@ -3,7 +3,7 @@
 <head>
   <title>Island</title>
   <%= include_stylesheets :game, :media => 'screen' %>
-  <%= include_javascripts :web, :web_templates %>
+  <%= include_javascripts :game, :web_templates %>
   <%= csrf_meta_tag %>
 </head>
 <body>
@@ -27,6 +27,10 @@
 <p class="alert"><%= alert %></p>
 
 <div class="toolbox">
+  <div class="selector">
+    <select><option>All Assets</option><option>Tiles</option><option>Items</option></select>
+  </div>
+  
   <% Asset.all.each do |asset| %>
     <div class="asset" data-id="<%= asset.id %>">
       <h3><%= asset.name %></h3>

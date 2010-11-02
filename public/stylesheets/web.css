@@ -5,6 +5,10 @@ html,body{
 }
 
 body{
+  font: normal 0.9em arial;
+}
+
+h1,h3,h3{
   font-family: 'arial rounded mt bold';
 }
 
@@ -37,4 +41,32 @@ input[multiple]{
 #wrapper{
   width: 800px;
   margin: auto;
+}
+
+.f{
+  position: relative;
+  margin-bottom: 25px;
+  padding-left: 100px;
+}
+
+.f label{
+  position: absolute;
+  left: 0;
+  top: 5px;
+  width: 90px;
+  text-align: right;
+  color: #777;
+  font-size: 0.9em;
+}
+
+.f input, .f textarea{
+  font: inherit;
+}
+
+.f input[name*=name]{
+  font-size: 1.2em;
+}
+
+.f .CodeMirror-wrapping{
+  border: 1px solid #aaa;
 }

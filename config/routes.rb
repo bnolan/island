@@ -9,6 +9,7 @@ Island::Application.routes.draw do
   # Keep in mind you can assign values other than :controller and :action
 
   resources :assets
+  resources :items
   resource :map
   
   # Sample of named route:

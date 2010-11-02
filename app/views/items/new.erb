@@ -1,0 +1,15 @@
+<p class="breadcrumbs">
+  <%= link_to "Items", items_url %> &gt; New
+</p>
+
+<h1>New Item</h1>
+
+<% form_for Item.new do |f| %>
+
+  <%= render :partial => 'form', :locals => {:f => f} %>
+
+  <div class="f">
+    <%= submit_tag 'CREATE' %> or <%= link_to 'cancel', :back %>
+  </div>
+
+<% end %>
