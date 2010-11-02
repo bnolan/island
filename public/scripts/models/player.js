@@ -11,10 +11,30 @@
       this.jumpTimer = 10;
       this.draw();
       this.dead = false;
+      this.healthBar = $("#health");
+      this.health = 10;
+      this.maxHealth = 15;
       return this;
     }
     return Player;
   })();
+  Player.prototype.addHealth = function(x, sender) {
+    this.health = Math.min(this.health + x, this.maxHealth);
+    return this.animateHealth();
+  };
+  Player.prototype.removeHealth = function(x, sender) {
+    this.health = Math.max(this.health - x, 0);
+    this.animateHealth();
+    return this.health === 0 ? this.deathBy(sender) : void 0;
+  };
+  Player.prototype.animateHealth = function() {
+    var percentage;
+    percentage = 100 / this.maxHealth * this.health;
+    this.healthBar.find('span').stop().animate({
+      width: "" + percentage + "%"
+    }, 1000);
+    return this.healthBar.find('label').text(this.health);
+  };
   Player.prototype.deathBy = function(sender) {
     this.dead = true;
     if (sender instanceof Tile) {

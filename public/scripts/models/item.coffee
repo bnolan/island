@@ -12,9 +12,33 @@ class Item extends Model
     @div.click @onclick
     
     @redraw()
+
+    @evalCode()
     
-    @icon.hide().effect('bounce', { mode : 'show', times : 3, distance : 50}, 250)
+  evalCode: ->
+    behaviours = null
     
+    try
+      eval("behaviours = " + @get("code"));
+    catch e
+      console.log e
+    
+    if behaviours
+      for name, func of behaviours
+        this[name] = func
+
+  show: ->
+    @div.show()
+    
+    if @onShow
+      @onShow()
+    
+  hide: ->
+    @div.hide()
+    
+    if @onHide
+      @onHide()
+      
   getPosition: ->
     new Vector(@get('x'), @get('y'), 0)
     
@@ -24,7 +48,13 @@ class Item extends Model
     $(".menu").css({ left : position.left - 275, top : position.top - 300 }).hide().fadeIn()
     
     e.preventDefault()
-    
+  
+  remove: ->
+    if @onRemove
+      @onRemove()
+    else
+      @div.remove()
+      
   redraw: ->
     if @div.parent().length==0
       @div.appendTo('#playfield').hide().fadeIn()

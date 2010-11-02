@@ -1,4 +1,8 @@
 class ItemsController < ApplicationController
+
+  def index
+    @items = Item.all
+  end
   
   def create
     @item = Item.create! params[:item]
@@ -12,7 +16,7 @@ class ItemsController < ApplicationController
   def update
     @item = Item.find params[:id]
     @item.update_attributes! params[:item]
-    render :action => 'edit'
+    redirect_to edit_item_url(@item)
   end
   
   def edit

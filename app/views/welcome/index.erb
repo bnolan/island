@@ -45,6 +45,11 @@
 <div id="playfield-container">
   <div id="playfield">
     
+    <div id="health">
+      <span style="width : 66%"></span>
+      <label>10H</label>
+    </div>
+    
     <div class="menu">
       <div class="chevron">&diams;</div>
 
@@ -67,6 +72,7 @@
 
   $(document).ready(function(){
     app = new Application;
+    app.addPlayer();
   });
 
 </script>

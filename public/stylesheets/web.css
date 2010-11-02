@@ -70,3 +70,10 @@ input[multiple]{
 .f .CodeMirror-wrapping{
   border: 1px solid #aaa;
 }
+
+#item-viewer{
+  float: right;
+  margin: 0 0 20px 20px;
+  width: 240px;
+  height: 200px;
+}

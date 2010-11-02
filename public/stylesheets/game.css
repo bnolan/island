@@ -1,14 +1,8 @@
-html,body{
+.game-container{
+  border: 1px solid #aaa;
+  background: #cef;
   overflow: hidden;
-  background: white;
-  margin: 0;
-  padding: 0;
-  height: 100%;
-}
-
-body{
-  font-family: 'arial rounded mt bold';
-  font-size: 0.8em;
+  position: relative;
 }
 
 input[multiple]{
@@ -62,38 +56,6 @@ canvas{
   cursor: move;
 }
 
-#header{
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 50px;
-  border-bottom: 3px solid #777;
-  z-index: 2000;
-  background: #eaeaea;
-}
-
-#footer{
-  position: absolute;
-  height: 30px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-top: 1px solid #777;
-  background: #eaeaea;
-  text-align: center;
-  line-height: 30px;
-  text-shadow: 0 -1px 1px white;
-  color: #777;
-  z-index: 2000;
-  font-family: arial;
-  font-size: 12px;
-}
-
-#footer a{
-  color: inherit;
-}
-
 #playfield *{
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -123,82 +85,6 @@ canvas{
 .tile .shadow{
   position: absolute;
   left: 0;
-}
-
-.toolbox{
-  background: white;
-  border-right: 3px solid #777;
-  -webkit-box-shadow: 2px 0 4px rgba(0,0,0,0.2);
-  width: 199px;
-  bottom: 31px;
-  left: 0;
-  top: 51px;
-  position: absolute;
-  z-index: 1000;
-  overflow: auto;
-  padding-bottom: 20px;
-}
-
-.toolbox .selector{
-  background: #f3f3f3;
-  margin-bottom: 5px;
-  padding: 10px;
-  border-bottom: 1px solid #ccc;
-}
-.toolbox .selector select{
-  width: 150px;
-}
-
-.toolbox .asset{
-  border: 1px solid transparent;
-  position: relative;
-  padding: 5px;
-  margin: 0 5px;
-  cursor: pointer;
-}
-
-.toolbox .asset *{
-  border: none;
-}
-
-.toolbox .asset h3{
-  margin: 0 0 10px 0;
-  color: #f07;
-}
-
-.toolbox .asset .description{
-  margin: 0 0 0 40px;
-  padding: 0;
-  font-family: arial;
-  font-size: 0.9em;
-  color: #555;
-  
-}
-
-.toolbox .asset img{
-  position: absolute;
-  left: 5px;
-  top: 15px;
-  width: 32px;
-}
-
-.toolbox .asset:hover{
-  background: #f3f3f3;
-  color: #333;
-  border: 1px solid #ccc;
-  -webkit-border-radius: 3px;
-}
-.toolbox .asset:hover *{
-}
-
-.toolbox .asset.selected{
-  background: rgba(255,0,90,0.5);
-  color: white;
-  border: 1px solid #f07;
-  -webkit-border-radius: 3px;
-}
-.toolbox .asset.selected *{
-  color: white;
 }
 
 .item{
@@ -272,71 +158,3 @@ canvas{
   -webkit-border-radius: 3px;
 }
 
-/* menubar*/
-
-ul.menubar {
-  background: #bbb;
-  height: 25px;
-  margin: 25px 0 0 200px;
-  padding: 0;
-  -webkit-border-top-left-radius: 12px;
-}
-.menubar>li{
-  list-style: none;
-  float: left;
-  margin: 0;
-  padding: 0;
-  position: relative;
-}
-
-.menubar>li>a{
-  display: block;
-  line-height: 25px;
-  color: white;
-  text-shadow: 0 1px 1px rgba(0,0,0,0.6);
-  padding: 0 20px;
-}
-
-.menubar>li>a:hover{
-  background: #777;
-}
-
-.menubar>li>ul{
-  display: none;
-}
-
-.menubar>li:hover>ul{
-  display: block;
-  position: absolute;
-  z-index: 4000;
-  background: white;
-  margin: 0;
-  padding: 0;
-  border: 3px solid black;
-  border-top: none;
-  -webkit-border-bottom-left-radius: 10px;
-  -webkit-border-bottom-right-radius: 10px;
-}
-
-.menubar>li>ul>li{
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.menubar>li>ul>li>a{
-  white-space: nowrap;
-  display: block;
-  line-height: 25px;
-  color: #333;
-/*  text-shadow: 0 1px 1px rgba(0,0,0,0.6);*/
-  padding: 0 20px;
-  margin: 5px;
-  border: 1px solid transparent;
-}
-
-.menubar>li>ul>li>a:hover{
-  background: rgba(255,0,90,0.5);
-  color: white;
-  border: 1px solid #f07;
-  -webkit-border-radius: 3px;
-}

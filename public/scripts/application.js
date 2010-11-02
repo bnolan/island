@@ -1,5 +1,5 @@
 (function() {
-  var Application, Model;
+  var Application, Model, Playfield;
   var __bind = function(func, context) {
     return function() { return func.apply(context, arguments); };
   };
@@ -15,6 +15,23 @@
   })();
   _.extend(Model.prototype, Backbone.Model.prototype);
   this.Model = Model;
+  Playfield = (function() {
+    function Playfield(parent) {
+      this.container = $(parent).addClass('game-container');
+      this.el = $("<div id='playfield' />").appendTo(this.container);
+      window.app = new Application;
+      this.app = window.app;
+      return this;
+    }
+    return Playfield;
+  })();
+  Playfield.prototype.setCenter = function(x, y) {
+    return this.el.css({
+      left: 0 + this.container.width() / 2 - x,
+      top: 0 + this.container.height() / 2 - y
+    });
+  };
+  this.Playfield = Playfield;
   Application = (function() {
     function Application() {
       var _this;
@@ -23,57 +40,18 @@
       this.tick = function() { return Application.prototype.tick.apply(_this, arguments); };
       this.gridWidth = 100;
       this.gridHeight = 80;
-      Assets.refresh($ASSETS);
+      if (typeof $ASSETS !== "undefined" && $ASSETS !== null) {
+        Assets.refresh($ASSETS);
+      }
       this.canvasWidth = $(document).width();
       this.canvasHeight = $(document).height();
       this.el = $("<canvas />").attr('width', this.canvasWidth).attr('height', this.canvasHeight).appendTo('#playfield');
       this.ctx = this.el[0].getContext('2d');
       this.draw();
       this.map = new Map;
-      this.map.refresh($MAP);
-      this.player = new Player;
-      setInterval(this.tick, 33);
-      $.keys = {};
-      $.keyCodes = {
-        ALT: 18,
-        BACKSPACE: 8,
-        CAPS_LOCK: 20,
-        COMMA: 188,
-        COMMAND: 91,
-        COMMAND_LEFT: 91,
-        COMMAND_RIGHT: 93,
-        CONTROL: 17,
-        DELETE: 46,
-        DOWN: 40,
-        END: 35,
-        ENTER: 13,
-        ESCAPE: 27,
-        HOME: 36,
-        INSERT: 45,
-        LEFT: 37,
-        MENU: 93,
-        NUMPAD_ADD: 107,
-        NUMPAD_DECIMAL: 110,
-        NUMPAD_DIVIDE: 111,
-        NUMPAD_ENTER: 108,
-        NUMPAD_MULTIPLY: 106,
-        NUMPAD_SUBTRACT: 109,
-        PAGE_DOWN: 34,
-        PAGE_UP: 33,
-        PERIOD: 190,
-        RIGHT: 39,
-        SHIFT: 16,
-        SPACE: 32,
-        TAB: 9,
-        UP: 38,
-        WINDOWS: 91
-      };
-      $(document).keydown(__bind(function(e) {
-        return $.keys[e.keyCode] = true;
-      }, this));
-      $(document).keyup(__bind(function(e) {
-        return $.keys[e.keyCode] = false;
-      }, this));
+      if (typeof $MAP !== "undefined" && $MAP !== null) {
+        this.map.refresh($MAP);
+      }
       $("#playfield").draggable({
         axis: 'x'
       });
@@ -87,6 +65,51 @@
     }
     return Application;
   })();
+  Application.prototype.addPlayer = function() {
+    this.player = new Player;
+    setInterval(this.tick, 33);
+    $.keys = {};
+    $.keyCodes = {
+      ALT: 18,
+      BACKSPACE: 8,
+      CAPS_LOCK: 20,
+      COMMA: 188,
+      COMMAND: 91,
+      COMMAND_LEFT: 91,
+      COMMAND_RIGHT: 93,
+      CONTROL: 17,
+      DELETE: 46,
+      DOWN: 40,
+      END: 35,
+      ENTER: 13,
+      ESCAPE: 27,
+      HOME: 36,
+      INSERT: 45,
+      LEFT: 37,
+      MENU: 93,
+      NUMPAD_ADD: 107,
+      NUMPAD_DECIMAL: 110,
+      NUMPAD_DIVIDE: 111,
+      NUMPAD_ENTER: 108,
+      NUMPAD_MULTIPLY: 106,
+      NUMPAD_SUBTRACT: 109,
+      PAGE_DOWN: 34,
+      PAGE_UP: 33,
+      PERIOD: 190,
+      RIGHT: 39,
+      SHIFT: 16,
+      SPACE: 32,
+      TAB: 9,
+      UP: 38,
+      WINDOWS: 91
+    };
+    $(document).keydown(__bind(function(e) {
+      return $.keys[e.keyCode] = true;
+    }, this));
+    return $(document).keyup(__bind(function(e) {
+      return $.keys[e.keyCode] = false;
+    }, this));
+  };
   Application.prototype.tick = function() {
     this.player.draw();
     return this.player.tick();

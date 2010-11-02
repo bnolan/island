@@ -38,5 +38,7 @@ javascripts:
 stylesheets:
   web:
     - public/stylesheets/web.css
+    - public/stylesheets/game.css
   game:
     - public/stylesheets/game.css
+    - public/stylesheets/webgame.css

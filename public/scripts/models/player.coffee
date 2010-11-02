@@ -16,6 +16,26 @@ class Player
     
     @dead = false
     
+    @healthBar = $("#health")
+    @health = 10
+    @maxHealth = 15
+
+  addHealth: (x, sender) ->
+    @health = Math.min(@health + x, @maxHealth)
+    @animateHealth()
+  
+  removeHealth: (x, sender) ->
+    @health = Math.max(@health - x, 0)
+    @animateHealth()
+    
+    if @health == 0
+      @deathBy(sender)
+      
+  animateHealth: ->
+    percentage = 100 / @maxHealth * @health
+    @healthBar.find('span').stop().animate { width : "#{percentage}%" }, 1000
+    @healthBar.find('label').text @health
+    
   deathBy: (sender) ->
     @dead = true
     

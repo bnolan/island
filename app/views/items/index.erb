@@ -1,0 +1,14 @@
+
+<h1>
+  Items
+</h1>
+
+<table>
+  <% @items.each do |item| %>
+  <tr>
+    <td><%= link_to item.name, item %></td>
+    <td><%= item.description %></td>
+  </tr>
+  <% end %>
+</table>
+      
