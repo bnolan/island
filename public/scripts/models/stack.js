@@ -98,5 +98,8 @@
   Stack.prototype.isFull = function() {
     return this.tiles.length >= 4;
   };
+  Stack.prototype.getCenter = function() {
+    return new Vector((this.x + 0.5) * this.map.gridWidth, (this.y + 0.5) * this.map.gridHeight);
+  };
   this.Stack = Stack;
 }).call(this);

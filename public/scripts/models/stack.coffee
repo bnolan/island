@@ -110,4 +110,9 @@ class Stack
   isFull: ->
     @tiles.length >= 4
 
+  getCenter: ->
+    new Vector(
+      (@x+0.5) * @map.gridWidth, (@y+0.5) * @map.gridHeight
+    )
+    
 this.Stack = Stack

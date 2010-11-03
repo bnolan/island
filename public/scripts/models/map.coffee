@@ -43,6 +43,37 @@ class Map
               else
                 grass
             )
+            
+    # @addItems()
+    
+  addItems: ->
+    tree = Items.find (item) ->
+      item.get('name').match /tree/i
+
+    rock = Items.find (item) ->
+      item.get('name').match /rock/i
+
+    for j from 1 to 100
+      stack = @get(-1, -1)
+
+      # Find a non-empty tile
+      while stack.isEmpty()
+        x = Math.floor(Math.random() * @maxX)
+        y = Math.floor(Math.random() * @maxY - 1) + 1
+        stack = @get(x, y)
+
+      position = stack.getCenter()
+      
+      item = if Math.random() < 0.5
+        rock.clone()
+      else
+        tree.clone()
+        
+      item.set({
+        x : position.x
+        y : position.y
+      })
+      item.show()
     
   get: (x,y) ->
     index = "#{x},#{y}"

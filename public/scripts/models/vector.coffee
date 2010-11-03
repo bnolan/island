@@ -10,4 +10,7 @@ class Vector
   subtract: (v) ->
     new Vector(@x - v.x, @y - v.y, @z - v.z)
 
+  toString: ->
+    "#{@x},#{@y},#{@z}"
+    
 this.Vector = Vector

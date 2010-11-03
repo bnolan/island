@@ -55,6 +55,32 @@
     }
     return _result;
   };
+  Map.prototype.addItems = function() {
+    var _result, item, j, position, rock, stack, tree, x, y;
+    tree = Items.find(function(item) {
+      return item.get('name').match(/tree/i);
+    });
+    rock = Items.find(function(item) {
+      return item.get('name').match(/rock/i);
+    });
+    _result = [];
+    for (j = 1; j <= 100; j++) {
+      stack = this.get(-1, -1);
+      while (stack.isEmpty()) {
+        x = Math.floor(Math.random() * this.maxX);
+        y = Math.floor(Math.random() * this.maxY - 1) + 1;
+        stack = this.get(x, y);
+      }
+      position = stack.getCenter();
+      item = Math.random() < 0.5 ? rock.clone() : tree.clone();
+      item.set({
+        x: position.x,
+        y: position.y
+      });
+      _result.push(item.show());
+    }
+    return _result;
+  };
   Map.prototype.get = function(x, y) {
     var index;
     index = "" + x + "," + y;
