@@ -46,6 +46,17 @@
   Stack.prototype.stackingHeight = function() {
     return this.isEmpty() ? GroundHeight : this.tiles.length * 40;
   };
+  Stack.prototype.pop = function() {
+    var _i, _len, _ref, _result, stack;
+    this.tiles.pop();
+    _ref = getNeighbours();
+    _result = [];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      stack = _ref[_i];
+      _result.push(stack.redrawShadows());
+    }
+    return _result;
+  };
   Stack.prototype.push = function(tile) {
     this.tiles.push(tile);
     return tile.draw();

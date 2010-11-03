@@ -3,7 +3,7 @@
     return function() { return func.apply(context, arguments); };
   };
   $(document).ready(__bind(function() {
-    var editor, params, playfield, textarea, x, y;
+    var editor, item, params, playfield, textarea, x, y;
     textarea = $("textarea[name*=code]")[0];
     if (textarea) {
       editor = CodeMirror.fromTextArea(textarea.id, {
@@ -30,7 +30,9 @@
         params = $ITEM;
         params.x = 150;
         params.y = 120;
-        return window.item = new Item(params);
+        item = new Item(params);
+        item.show();
+        return window.item = item;
       }
     }
   }, this));

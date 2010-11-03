@@ -1,5 +1,8 @@
 (function() {
   var Player;
+  var __bind = function(func, context) {
+    return function() { return func.apply(context, arguments); };
+  };
   Player = (function() {
     function Player() {
       this.div = $("<div />").addClass('player');
@@ -19,6 +22,22 @@
     }
     return Player;
   })();
+  Player.prototype.notifyAction = function(text) {
+    var label, y;
+    y = parseInt(this.avatar.css('top')) + 60;
+    label = $("<label />").text(text).addClass('action');
+    label.appendTo(this.div);
+    return label.css({
+      top: y
+    }).animate({
+      top: y - 15
+    }, 500, 'linear').animate({
+      top: y - 30,
+      opacity: 0
+    }, 500, 'linear', __bind(function() {
+      return label.remove();
+    }, this));
+  };
   Player.prototype.addHealth = function(x, sender) {
     this.health = Math.min(this.health + x, this.maxHealth);
     return this.animateHealth();
@@ -35,6 +54,13 @@
       width: "" + percentage + "%"
     }, 1000);
     return this.healthBar.find('label').text(this.health);
+  };
+  Player.prototype.dropItem = function(item) {
+    item.set({
+      x: this.position.x + this.radius.x,
+      y: this.position.y + 5
+    });
+    return item.show();
   };
   Player.prototype.deathBy = function(sender) {
     this.dead = true;

@@ -1,19 +1,22 @@
 class Item extends Model
   constructor: ->
     super
-    
-    @div = $("<div />").addClass('item')
-    
-    @asset = Assets.get(38)
-    
-    @icon = $("<img />").attr('src', @asset.get('upload_url')).addClass('icon').appendTo @div
-    @shadow = $("<img />").attr('src', '/images/shadows/player.png').addClass('shadow').appendTo @div
+    @evalCode()
 
-    @div.click @onclick
+  createElements: ->
+    @div = $("<div />").addClass('item').hide()
+    @div.appendTo '#playfield'
+
+    @asset = Assets.get(@get('asset_id'))
+
+    @shadow = $("<img />").attr('src', '/images/shadows/player.png').addClass('shadow').appendTo @div
+    @icon = $("<img />").attr('src', @asset.get('upload_url')).addClass('icon').appendTo @div
+
+    @icon.click @onclick
     
     @redraw()
-
-    @evalCode()
+    
+    @show()
     
   evalCode: ->
     behaviours = null
@@ -28,6 +31,8 @@ class Item extends Model
         this[name] = func
 
   show: ->
+    @redraw()
+    
     @div.show()
     
     if @onShow
@@ -42,26 +47,41 @@ class Item extends Model
   getPosition: ->
     new Vector(@get('x'), @get('y'), 0)
     
+  # todo: refactor into menu class
   onclick: (e) =>
     position = @div.offset()
     
-    $(".menu").css({ left : position.left - 275, top : position.top - 300 }).hide().fadeIn()
+    ul = $(".menu").css({ left : position.left - 278, top : position.top - 240 }).hide().find('ul').empty()
+    
+    $(".menu .description").text @get('description')
+    $(".menu .name").text @get('name')
+    
+    if @getVerbs
+      for verb in @getVerbs()
+        func = this["onVerb#{verb.capitalize()}"]
+
+        $("<li />").text(verb.capitalize()).appendTo(ul).click (e) =>
+          $(".menu").fadeOut()
+          e.preventDefault()
+
+          func.call(this, app.player)
+    
+    $(".menu").fadeIn()
     
     e.preventDefault()
+    e.stopPropagation()
   
   remove: ->
-    if @onRemove
-      @onRemove()
-    else
-      @div.remove()
+    @div.hide()
+    @div = null
       
   redraw: ->
-    if @div.parent().length==0
-      @div.appendTo('#playfield').hide().fadeIn()
+    if not @div
+      @createElements()
 
     position = @getPosition()
 
-    height = 120
+    height = @get('height')
     altitude = app.map.getHeightByPoint(position)
     
     @div.css {
@@ -70,14 +90,22 @@ class Item extends Model
       'z-index' : parseInt(position.y + altitude) + 10
     }
     
+    width = @get('width')
+    height = @get('height')
+    
+    anchor = @asset.get('anchor_y') || 0
+    
     @icon.css { 
-      top : 0 - altitude - height - 15
-      left : -50
+      width : width
+      height : height
+      top : 0 - altitude - height + anchor
+      left : -width / 2
     }
     
     @shadow.css { 
-      top :  0 - altitude  - 20
-      left : -25
+      top :  0 - altitude - 10
+      width : width
+      left : -width / 2
     }
     
 

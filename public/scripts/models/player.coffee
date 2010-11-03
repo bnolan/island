@@ -22,6 +22,14 @@ class Player
     
     @animateHealth()
 
+  notifyAction: (text) ->
+    y = parseInt(@avatar.css('top')) + 60
+    
+    label = $("<label />").text(text).addClass('action')
+    label.appendTo @div
+    label.css({ top : y }).animate({ top : y - 15 }, 500, 'linear').animate { top : y - 30, opacity: 0}, 500, 'linear', =>
+      label.remove()
+    
   addHealth: (x, sender) ->
     @health = Math.min(@health + x, @maxHealth)
     @animateHealth()
@@ -37,6 +45,13 @@ class Player
     percentage = 100 / @maxHealth * @health
     @healthBar.find('span').stop().animate { width : "#{percentage}%" }, 1000
     @healthBar.find('label').text @health
+    
+  dropItem: (item) ->
+    item.set {
+      x : @position.x + @radius.x
+      y : @position.y + 5
+    }
+    item.show()
     
   deathBy: (sender) ->
     @dead = true

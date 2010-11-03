@@ -69,7 +69,8 @@
 
   $ASSETS = <%= Asset.all.to_json(:methods => [:upload_url]).html_safe %>;
   $MAP = <%= Stack.all.to_json.html_safe %>;
-
+  $ITEMS = <%= Item.all.to_json.html_safe.gsub(/\u200/,'').gsub('\\b','') %>;
+  
   $(document).ready(function(){
     app = new Application;
     app.addPlayer();

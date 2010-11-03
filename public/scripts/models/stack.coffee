@@ -48,6 +48,12 @@ class Stack
     else
       @tiles.length * 40
     
+  pop: ->
+    @tiles.pop()
+
+    for stack in getNeighbours()
+      stack.redrawShadows()
+    
   push: (tile) ->
     @tiles.push tile
     tile.draw()

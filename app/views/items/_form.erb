@@ -5,14 +5,26 @@
 </div>
 
 <div class="f">
+  <%= f.label :width %>
+  <%= f.text_field :width %>
+</div>
+
+<div class="f">
+  <%= f.label :height %>
+  <%= f.text_field :height %>
+</div>
+
+<div class="f">
   <%= f.label :description %>
   <%= f.text_area :description, :rows => 3 %>
 </div>
 
 <div class="f">
   <%= f.label :asset %>
-  <%= f.select :asset_id, Asset.all.collect { |a| [a.name, a.id] } %>
-  <%= link_to image_tag(f.object.asset.upload.url, :width => 32, :style => 'position: absolute; margin-top: -20px'), f.object.asset %>
+  <%= f.select :asset_id, Asset.all.collect { |a| [a.name, a.id] }, :include_blank => true %>
+  <% if f.object.asset %>
+    <%= link_to image_tag(f.object.asset.upload.url, :width => 32, :style => 'position: absolute; margin-top: -20px'), f.object.asset %>
+  <% end %>
 </div>
 
 <div class="f">

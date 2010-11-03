@@ -6,6 +6,9 @@
   Math.clamp = function(v, min, max) {
     return Math.min(Math.max(min, v), max);
   };
+  String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+  };
   Model = (function() {
     function Model() {
       Backbone.Model.apply(this, arguments);
@@ -43,6 +46,9 @@
       if (typeof $ASSETS !== "undefined" && $ASSETS !== null) {
         Assets.refresh($ASSETS);
       }
+      if (typeof $ITEMS !== "undefined" && $ITEMS !== null) {
+        Items.refresh($ITEMS);
+      }
       this.canvasWidth = $(document).width();
       this.canvasHeight = $(document).height();
       this.el = $("<canvas />").attr('width', this.canvasWidth).attr('height', this.canvasHeight).appendTo('#playfield');
@@ -52,9 +58,6 @@
       if (typeof $MAP !== "undefined" && $MAP !== null) {
         this.map.refresh($MAP);
       }
-      $("#playfield").draggable({
-        axis: 'x'
-      });
       $("#playfield").click(this.onclick);
       $(".toolbox .asset").click(function(e) {
         $(".toolbox .asset").removeClass('selected');
@@ -115,11 +118,14 @@
     return this.player.tick();
   };
   Application.prototype.onclick = function(e) {
-    x = e.clientX - this.el.offset().left;
-    y = e.clientY - this.el.offset().top;
-    x = Math.floor(x / this.gridWidth);
-    y = Math.floor(y / this.gridHeight);
-    return this.addTile(x, y);
+    $(".menu:visible").fadeOut();
+    if ($(".asset.selected").length > 0) {
+      x = e.clientX - this.el.offset().left;
+      y = e.clientY - this.el.offset().top;
+      x = Math.floor(x / this.gridWidth);
+      y = Math.floor(y / this.gridHeight);
+      return this.addTile(x, y);
+    }
   };
   Application.prototype.addTile = function(x, y) {
     index = "" + x + "," + y;

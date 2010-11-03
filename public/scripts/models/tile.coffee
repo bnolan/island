@@ -9,6 +9,8 @@ class Tile
     @div = $("<div />").addClass 'tile'
     @img = $("<img />").attr('src', @asset.getImageUrl()).appendTo @div
     
+    @img.click @onclick
+    
   draw: ->
     x = @stack.x
     y = @stack.y
@@ -33,6 +35,10 @@ class Tile
     
     for stack in @stack.getNeighbours()
       stack.redrawShadows()
+    
+  remove: ->
+    @stack.pop()
+    @div.remove()
     
   redrawShadows: ->
     if @drawShadow()
@@ -59,6 +65,34 @@ class Tile
       (@asset.get('height_east') - @asset.get('height_west')) * x + @asset.get('height_west')
     else
       40
+    
+  getName: ->
+    @asset.get('name')
+    
+  getDescription: ->
+    ""
+    
+  onclick: (e) =>
+    position = @div.offset()
+    
+    ul = $(".menu").css({ left : position.left - 230, top : position.top - 40 }).hide().find('ul').empty()
+    
+    $(".menu .description").text @getDescription()
+    $(".menu .name").text @getName()
+    
+    $("<li />").text("Destroy").appendTo(ul).click (e) =>
+      $(".menu").fadeOut()
+      e.preventDefault()
+      @onDestroy(app.player)
+    
+    $(".menu").fadeIn()
+    
+    e.preventDefault()
+    e.stopPropagation()
+
+  onDestroy: ->
+    # >..
+    @remove()
     
   isRamp: ->
     @asset.get('name').match /ramp/i

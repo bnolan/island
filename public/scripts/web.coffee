@@ -32,7 +32,9 @@ $(document).ready =>
       params.x = 150
       params.y = 120
     
-      window.item = new Item params
+      item = new Item params
+      item.show()
+      window.item = item
       
       # name = "onShow"
       # 

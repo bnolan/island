@@ -1,6 +1,9 @@
 Math.clamp = (v, min, max) ->
   Math.min(Math.max(min, v), max)
 
+String.prototype.capitalize = ->
+  this.charAt(0).toUpperCase() + this.slice(1);
+
 class Model
   constructor: ->
     Backbone.Model.apply(this, arguments)
@@ -34,6 +37,9 @@ class Application
     if $ASSETS?
       Assets.refresh $ASSETS
     
+    if $ITEMS?
+      Items.refresh $ITEMS
+
     @canvasWidth = $(document).width()
     @canvasHeight = $(document).height()
     
@@ -48,9 +54,9 @@ class Application
     if $MAP?
       @map.refresh $MAP
     
-    $("#playfield").draggable {
-      axis : 'x'
-    }
+    # $("#playfield").draggable {
+    #   axis : 'x'
+    # }
     $("#playfield").click @onclick
     
     $(".toolbox .asset").click (e) ->
@@ -76,13 +82,16 @@ class Application
     @player.tick()
     
   onclick: (e) =>
-    x = e.clientX - @el.offset().left
-    y = e.clientY - @el.offset().top
+    $(".menu:visible").fadeOut()
+
+    if $(".asset.selected").length > 0
+      x = e.clientX - @el.offset().left
+      y = e.clientY - @el.offset().top
     
-    x = Math.floor x / @gridWidth
-    y = Math.floor y / @gridHeight
+      x = Math.floor x / @gridWidth
+      y = Math.floor y / @gridHeight
     
-    @addTile x, y
+      @addTile x, y
     
   addTile: (x,y) ->
     index = "#{x},#{y}"
