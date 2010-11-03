@@ -14,6 +14,7 @@
       this.healthBar = $("#health");
       this.health = 10;
       this.maxHealth = 15;
+      this.animateHealth();
       return this;
     }
     return Player;

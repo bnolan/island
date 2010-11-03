@@ -19,6 +19,8 @@ class Player
     @healthBar = $("#health")
     @health = 10
     @maxHealth = 15
+    
+    @animateHealth()
 
   addHealth: (x, sender) ->
     @health = Math.min(@health + x, @maxHealth)
