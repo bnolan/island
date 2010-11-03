@@ -75,7 +75,7 @@ class Tile
   onclick: (e) =>
     position = @div.offset()
 
-    ul = $(".menu").css({ left : position.left - 230, top : position.top - 100 }).hide().find('ul').empty()
+    ul = $(".menu").css({ left : e.clientX - 80, top : e.clientY - 90 }).hide().find('ul').empty()
     
     $(".menu .description").text @getDescription()
     $(".menu .name").text @getName()
@@ -85,7 +85,7 @@ class Tile
       e.preventDefault()
       @onDestroy(app.player)
     
-    $(".menu").fadeIn()
+    $(".menu").css({ left : e.clientX - 80, top : e.clientY - $(".menu").height() - 40 }).fadeIn()
     
     e.preventDefault()
     e.stopPropagation()

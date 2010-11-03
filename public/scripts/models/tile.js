@@ -70,8 +70,8 @@
   Tile.prototype.onclick = function(e) {
     position = this.div.offset();
     ul = $(".menu").css({
-      left: position.left - 230,
-      top: position.top - 100
+      left: e.clientX - 80,
+      top: e.clientY - 90
     }).hide().find('ul').empty();
     $(".menu .description").text(this.getDescription());
     $(".menu .name").text(this.getName());
@@ -80,7 +80,10 @@
       e.preventDefault();
       return this.onDestroy(app.player);
     }, this));
-    $(".menu").fadeIn();
+    $(".menu").css({
+      left: e.clientX - 80,
+      top: e.clientY - $(".menu").height() - 40
+    }).fadeIn();
     e.preventDefault();
     return e.stopPropagation();
   };

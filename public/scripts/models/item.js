@@ -62,10 +62,7 @@
   };
   Item.prototype.onclick = function(e) {
     position = this.div.offset();
-    ul = $(".menu").css({
-      left: position.left - 278,
-      top: position.top - 240
-    }).hide().find('ul').empty();
+    ul = $(".menu").hide().find('ul').empty();
     $(".menu .description").text(this.get('description'));
     $(".menu .name").text(this.get('name'));
     if (this.getVerbs) {
@@ -80,7 +77,10 @@
         }, this));
       }
     }
-    $(".menu").fadeIn();
+    $(".menu").css({
+      left: e.clientX - 80,
+      top: e.clientY - $(".menu").height() - 40
+    }).fadeIn();
     e.preventDefault();
     return e.stopPropagation();
   };
