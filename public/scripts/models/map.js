@@ -6,10 +6,55 @@
       this.stacks = {};
       this.gridWidth = 100;
       this.gridHeight = 80;
+      this.maxY = 8;
+      this.maxX = 100;
       return this;
     }
     return Map;
   })();
+  Map.prototype.autogenerate = function() {
+    var _result, _result2, _result3, _to, _to2, _to3, _to4, dirt, grass, h, j, stack, w, x, xx, y, yy;
+    x = 1;
+    y = 3;
+    w = 2;
+    h = 2;
+    grass = Assets.find(function(asset) {
+      return asset.get('name').match(/grass/i);
+    });
+    dirt = Assets.find(function(asset) {
+      return asset.get('name').match(/dirt/i);
+    });
+    for (xx = x, _to = x + w; xx <= _to; xx++) {
+      for (yy = y, _to2 = y + h; yy <= _to2; yy++) {
+        stack = this.get(xx, yy);
+        if (!stack.isFull()) {
+          stack.newTile(Assets.first());
+        }
+      }
+    }
+    _result = [];
+    for (j = 1; j <= 100; j++) {
+      x = Math.floor(Math.random() * this.maxX);
+      y = Math.floor(Math.random() * this.maxY - 1) + 1;
+      w = Math.floor(Math.random() * 4);
+      h = Math.floor(Math.random() * Math.min(3, this.maxY - y));
+      _result.push((function() {
+        _result2 = [];
+        for (xx = x, _to3 = x + w; xx <= _to3; xx++) {
+          _result2.push((function() {
+            _result3 = [];
+            for (yy = y, _to4 = y + h; yy <= _to4; yy++) {
+              stack = this.get(xx, yy);
+              _result3.push(!stack.isFull() ? stack.newTile(Math.random() < 0.5 ? dirt : grass) : void 0);
+            }
+            return _result3;
+          }).call(this));
+        }
+        return _result2;
+      }).call(this));
+    }
+    return _result;
+  };
   Map.prototype.get = function(x, y) {
     var index;
     index = "" + x + "," + y;

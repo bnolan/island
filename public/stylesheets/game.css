@@ -39,6 +39,20 @@ canvas{
   line-height: 20px;
 }
 
+.player .speech{
+  background-image: url(/images/speechbubble.png);
+  position: absolute;
+  width: 101px;
+  height: 107px;
+  left: 0;
+  top: -125px;
+}
+.player .speech label{
+  padding: 10px;
+  height: 80px;
+  width: 80px;
+}
+
 .player.drowned .shadow{
   display: none;
 }
@@ -99,6 +113,7 @@ canvas{
 .tile .shadow{
   position: absolute;
   left: 0;
+  top: -40px;
 }
 
 .item{

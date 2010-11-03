@@ -53,8 +53,13 @@ class Player
     }
     item.show()
     
+  say: (message) ->
+    $("<div />").addClass("speech").html("<label>#{message}</label>").appendTo @div
+    
   deathBy: (sender) ->
     @dead = true
+
+    @say "FUUUU!!"
     
     if sender instanceof Tile
       if sender.isWater()
@@ -66,7 +71,7 @@ class Player
         app.playerDied("from trying to swim in the deadly molten lava.")
     
     if sender == "falling"
-      @div.animate { opacity : 0, 'margin-top' : 50 }, 200
+      @div.animate { opacity : 0, 'margin-top' : 500 }, 1000, 'linear'
       app.playerDied("from falling to the unknown regions far far below.")
     
   tick: ->
@@ -128,7 +133,7 @@ class Player
 
     # Check for death states
     
-    if @position.z < -100
+    if @position.z < 0
       @deathBy 'falling'
       
     if tile
@@ -170,7 +175,7 @@ class Player
     @velocity.z = Math.clamp(@velocity.z, -20, 20)
     
   groundContact: ->
-    @position.z <= @groundHeight()
+    @position.z <= app.map.getHeightByRadius(@position, @radius) + 5
     
   altitude: ->
     @position.z

@@ -62,8 +62,12 @@
     });
     return item.show();
   };
+  Player.prototype.say = function(message) {
+    return $("<div />").addClass("speech").html("<label>" + message + "</label>").appendTo(this.div);
+  };
   Player.prototype.deathBy = function(sender) {
     this.dead = true;
+    this.say("FUUUU!!");
     if (sender instanceof Tile) {
       if (sender.isWater()) {
         this.div.addClass('drowned');
@@ -77,8 +81,8 @@
     if (sender === "falling") {
       this.div.animate({
         opacity: 0,
-        'margin-top': 50
-      }, 200);
+        'margin-top': 500
+      }, 1000, 'linear');
       return app.playerDied("from falling to the unknown regions far far below.");
     }
   };
@@ -128,7 +132,7 @@
     } else {
       this.velocity.z -= 1;
     }
-    if (this.position.z < -100) {
+    if (this.position.z < 0) {
       this.deathBy('falling');
     }
     if (tile) {
@@ -175,7 +179,7 @@
     return this.velocity.z = Math.clamp(this.velocity.z, -20, 20);
   };
   Player.prototype.groundContact = function() {
-    return this.position.z <= this.groundHeight();
+    return this.position.z <= app.map.getHeightByRadius(this.position, this.radius) + 5;
   };
   Player.prototype.altitude = function() {
     return this.position.z;

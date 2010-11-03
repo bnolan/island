@@ -3,7 +3,47 @@ class Map
     @stacks = {}
     @gridWidth = 100
     @gridHeight = 80
+    @maxY = 8
+    @maxX = 100
 
+  autogenerate: ->
+    x = 1
+    y = 3
+    w = 2
+    h = 2
+    
+    grass = Assets.find (asset) ->
+      asset.get('name').match /grass/i
+
+    dirt = Assets.find (asset) ->
+      asset.get('name').match /dirt/i
+    
+    for xx from x to x + w
+      for yy from y to y + h
+        stack = @get(xx,yy)
+        
+        if not stack.isFull()
+          stack.newTile Assets.first()
+
+    for j from 1 to 100
+      x = Math.floor(Math.random() * @maxX)
+      y = Math.floor(Math.random() * @maxY - 1) + 1
+      
+      w = Math.floor(Math.random() * 4)
+      h = Math.floor(Math.random() * Math.min(3, @maxY - y))
+      
+      for xx from x to x + w
+        for yy from y to y + h
+          stack = @get(xx,yy)
+          
+          if not stack.isFull()
+            stack.newTile(
+              if Math.random() < 0.5 
+                dirt
+              else
+                grass
+            )
+    
   get: (x,y) ->
     index = "#{x},#{y}"
 

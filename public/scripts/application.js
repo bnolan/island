@@ -58,6 +58,7 @@
       if (typeof $MAP !== "undefined" && $MAP !== null) {
         this.map.refresh($MAP);
       }
+      this.map.autogenerate();
       $("#playfield").click(this.onclick);
       $(".toolbox .asset").click(function(e) {
         $(".toolbox .asset").removeClass('selected');

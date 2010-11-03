@@ -53,6 +53,8 @@ class Application
     
     if $MAP?
       @map.refresh $MAP
+
+    @map.autogenerate()
     
     # $("#playfield").draggable {
     #   axis : 'x'

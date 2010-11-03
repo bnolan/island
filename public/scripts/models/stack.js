@@ -95,5 +95,8 @@
   Stack.prototype.isEmpty = function() {
     return this.tiles.length === 0;
   };
+  Stack.prototype.isFull = function() {
+    return this.tiles.length >= 4;
+  };
   this.Stack = Stack;
 }).call(this);

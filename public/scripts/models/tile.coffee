@@ -20,7 +20,7 @@ class Tile
     @div.css { 
       position : 'absolute'
       left : x * @gridWidth
-      top : y * @gridHeight - @div.height() - 50 - height
+      top : y * @gridHeight - @div.height() - 5 - height
       'z-index' : y * @gridHeight + height
     }
     
@@ -44,16 +44,16 @@ class Tile
     @div.find('.shadow').remove()
 
     if @drawShadow()
-      if @stack.westernNeighbour() and (@stack.westernNeighbour().stackingHeight() > @stack.stackingHeight())
+      if (@stack.westernNeighbour().stackingHeight() > @stack.stackingHeight())
         $("<img />").addClass('shadow').attr('src', '/images/shadows/west.png').appendTo @div
 
-      if @stack.easternNeighbour() and (@stack.easternNeighbour().stackingHeight() > @stack.stackingHeight())
+      if (@stack.easternNeighbour().stackingHeight() > @stack.stackingHeight())
         $("<img />").addClass('shadow').attr('src', '/images/shadows/east.png').appendTo @div
 
       # if @stack.northernNeighbour() and (@stack.northernNeighbour().stackingHeight() < @stack.stackingHeight())
       #   $("<img />").addClass('shadow').attr('src', '/images/shadows/south.png').css({ top : -40 }).appendTo @div
 
-      if @stack.northernNeighbour() and (@stack.northernNeighbour().stackingHeight() > @stack.stackingHeight())
+      if (@stack.northernNeighbour().stackingHeight() > @stack.stackingHeight())
         $("<img />").addClass('shadow').attr('src', '/images/shadows/north.png').appendTo @div
 
       # if @stack.northWesternNeighbour() and (@stack.northWesternNeighbour().stackingHeight() > @stack.stackingHeight())
@@ -75,13 +75,7 @@ class Tile
   onclick: (e) =>
     position = @div.offset()
 
-    console.log e.clientX - position.top - height
-    
-    console.log @getName()
-    
-    return
-    
-    ul = $(".menu").css({ left : position.left - 230, top : position.top - 40 }).hide().find('ul').empty()
+    ul = $(".menu").css({ left : position.left - 230, top : position.top - 100 }).hide().find('ul').empty()
     
     $(".menu .description").text @getDescription()
     $(".menu .name").text @getName()

@@ -26,7 +26,7 @@
     this.div.css({
       position: 'absolute',
       left: x * this.gridWidth,
-      top: y * this.gridHeight - this.div.height() - 50 - height,
+      top: y * this.gridHeight - this.div.height() - 5 - height,
       'z-index': y * this.gridHeight + height
     });
     $("<label>" + x + "," + y + "," + height + "</label>").appendTo(this.div);
@@ -49,13 +49,13 @@
   Tile.prototype.redrawShadows = function() {
     this.div.find('.shadow').remove();
     if (this.drawShadow()) {
-      if (this.stack.westernNeighbour() && (this.stack.westernNeighbour().stackingHeight() > this.stack.stackingHeight())) {
+      if (this.stack.westernNeighbour().stackingHeight() > this.stack.stackingHeight()) {
         $("<img />").addClass('shadow').attr('src', '/images/shadows/west.png').appendTo(this.div);
       }
-      if (this.stack.easternNeighbour() && (this.stack.easternNeighbour().stackingHeight() > this.stack.stackingHeight())) {
+      if (this.stack.easternNeighbour().stackingHeight() > this.stack.stackingHeight()) {
         $("<img />").addClass('shadow').attr('src', '/images/shadows/east.png').appendTo(this.div);
       }
-      return this.stack.northernNeighbour() && (this.stack.northernNeighbour().stackingHeight() > this.stack.stackingHeight()) ? $("<img />").addClass('shadow').attr('src', '/images/shadows/north.png').appendTo(this.div) : void 0;
+      return this.stack.northernNeighbour().stackingHeight() > this.stack.stackingHeight() ? $("<img />").addClass('shadow').attr('src', '/images/shadows/north.png').appendTo(this.div) : void 0;
     }
   };
   Tile.prototype.getHeight = function(x, y) {
@@ -69,12 +69,9 @@
   };
   Tile.prototype.onclick = function(e) {
     position = this.div.offset();
-    console.log(e.clientX - position.top - height);
-    console.log(this.getName());
-    return;
     ul = $(".menu").css({
       left: position.left - 230,
-      top: position.top - 40
+      top: position.top - 100
     }).hide().find('ul').empty();
     $(".menu .description").text(this.getDescription());
     $(".menu .name").text(this.getName());

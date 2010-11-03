@@ -105,5 +105,9 @@ class Stack
     
   isEmpty: ->
     @tiles.length == 0
+    
+  # Maximum stack height of 4
+  isFull: ->
+    @tiles.length >= 4
 
 this.Stack = Stack
