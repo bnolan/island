@@ -53,6 +53,8 @@ class Stack
 
     for stack in getNeighbours()
       stack.redrawShadows()
+
+    @redrawShadows()
     
   push: (tile) ->
     @tiles.push tile

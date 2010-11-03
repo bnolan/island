@@ -9,7 +9,7 @@ class Tile
     @div = $("<div />").addClass 'tile'
     @img = $("<img />").attr('src', @asset.getImageUrl()).appendTo @div
     
-    @img.click @onclick
+    @div.click @onclick
     
   draw: ->
     x = @stack.x
@@ -41,9 +41,9 @@ class Tile
     @div.remove()
     
   redrawShadows: ->
-    if @drawShadow()
-      @div.find('.shadow').remove()
+    @div.find('.shadow').remove()
 
+    if @drawShadow()
       if @stack.westernNeighbour() and (@stack.westernNeighbour().stackingHeight() > @stack.stackingHeight())
         $("<img />").addClass('shadow').attr('src', '/images/shadows/west.png').appendTo @div
 
@@ -74,6 +74,12 @@ class Tile
     
   onclick: (e) =>
     position = @div.offset()
+
+    console.log e.clientX - position.top - height
+    
+    console.log @getName()
+    
+    return
     
     ul = $(".menu").css({ left : position.left - 230, top : position.top - 40 }).hide().find('ul').empty()
     

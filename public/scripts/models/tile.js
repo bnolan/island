@@ -14,7 +14,7 @@
       this.gridHeight = 80;
       this.div = $("<div />").addClass('tile');
       this.img = $("<img />").attr('src', this.asset.getImageUrl()).appendTo(this.div);
-      this.img.click(this.onclick);
+      this.div.click(this.onclick);
       return this;
     }
     return Tile;
@@ -47,8 +47,8 @@
     return this.div.remove();
   };
   Tile.prototype.redrawShadows = function() {
+    this.div.find('.shadow').remove();
     if (this.drawShadow()) {
-      this.div.find('.shadow').remove();
       if (this.stack.westernNeighbour() && (this.stack.westernNeighbour().stackingHeight() > this.stack.stackingHeight())) {
         $("<img />").addClass('shadow').attr('src', '/images/shadows/west.png').appendTo(this.div);
       }
@@ -69,6 +69,9 @@
   };
   Tile.prototype.onclick = function(e) {
     position = this.div.offset();
+    console.log(e.clientX - position.top - height);
+    console.log(this.getName());
+    return;
     ul = $(".menu").css({
       left: position.left - 230,
       top: position.top - 40
