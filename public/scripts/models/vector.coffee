@@ -12,5 +12,9 @@ class Vector
 
   toString: ->
     "#{@x},#{@y},#{@z}"
+  
+  toWire: ->
+    for component in [@x, @y, @z]
+      Math.floor component
     
 this.Vector = Vector

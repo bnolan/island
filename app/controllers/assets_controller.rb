@@ -1,5 +1,6 @@
 class AssetsController < ApplicationController
-  
+  before_filter :authenticate_user!
+    
   def create
     params[:asset][:upload].each do |upload|
       Asset.create! :name => upload.original_filename.sub(/\.png/,''), :upload => upload, :description => "Uploaded #{Date.today.to_s}"

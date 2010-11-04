@@ -18,5 +18,15 @@
   Vector.prototype.toString = function() {
     return "" + this.x + "," + this.y + "," + this.z;
   };
+  Vector.prototype.toWire = function() {
+    var _i, _len, _ref, _result, component;
+    _ref = [this.x, this.y, this.z];
+    _result = [];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      component = _ref[_i];
+      _result.push(Math.floor(component));
+    }
+    return _result;
+  };
   this.Vector = Vector;
 }).call(this);

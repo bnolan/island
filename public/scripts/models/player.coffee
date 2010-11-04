@@ -1,12 +1,14 @@
-class Player
+class Player extends Model
   constructor: ->
+    super
+    
     @div = $("<div />").addClass('player')
     
     @avatar = $("<img />").attr('src', '/system/uploads/34/original/boy.png?1288307760').addClass('avatar').appendTo @div
     @shadow = $("<img />").attr('src', '/images/shadows/player.png').addClass('shadow').appendTo @div
     
     @velocity = new Vector(0,0,0)
-    @position = new Vector(250,360,150)
+    @position = new Vector(@get('x'), @get('y'), @get('z'))
     @radius = new Vector(30, 10, 0)
 
     # Pause between subsequent jumps
@@ -15,11 +17,10 @@ class Player
     @draw()
     
     @dead = false
-    
-    @healthBar = $("#health")
     @health = 10
     @maxHealth = 15
     
+    @healthBar = $("#health")
     @animateHealth()
 
   notifyAction: (text) ->
@@ -216,6 +217,13 @@ class Player
       @getStack().height(@position.x, @position.y)
     else
       0
+    
+  getUpdateAttributes: ->
+    {
+      position : @position.toWire()
+      velocity : @position.toWire()
+      id : @id
+    }
     
 
 

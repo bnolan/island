@@ -1,5 +1,6 @@
 class MapsController < ApplicationController
-  
+  before_filter :authenticate_user!
+    
   def create
     Stack.delete_all
     

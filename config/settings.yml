@@ -1,0 +1,14 @@
+websockets:
+   port:       8180
+   devPort:    8180
+   originWhitelist:
+      - "http://localhost"
+      - "http://localhost:3000"
+      - "http://localhost:3100"
+      - "http://10.0.3.1:3100"
+      - "http://rumpetroll.six12.co"
+      - "http://rumpetroll.com"
+      - "http://dev.rumpetroll.com"
+      - "http://www.rumpetroll.com"
+      - "http://rumpetroll.six12.co"
+

@@ -29,6 +29,39 @@ class Playfield
     
 this.Playfield = Playfield
 
+class WebSocketService
+  constructor: (app, socket) ->
+    @socket = socket
+    @app = app
+    
+    @hasConnection = false
+
+  welcomeHandler: (data) ->
+    # ...
+    
+  connectionClosed: ->
+    @hasConnection = false
+    console.log 'Connection closed'
+    
+  updateHandler: (data) ->
+    console.log 'update'
+    console.log data
+    
+  processMessage: (data) ->
+    func = this[data.type + 'Handler']
+    
+    if func
+      func.call(this, data)
+    else
+      console.log "No handler for message type #{data.type}"
+  
+  sendUpdate: (model) ->
+    obj = model.getUpdateAttributes()
+
+    obj.type = 'update'
+
+    @socket.send(JSON.stringify(obj))
+
 class Application
   constructor: ->
     @gridWidth = 100
@@ -50,11 +83,19 @@ class Application
     @draw()
     
     @map = new Map
+
+    @webSocket = new WebSocket("ws://localhost:8180")
+    @webSocket.onopen = @onSocketOpen
+    @webSocket.onclose = @onSocketClose
+    @webSocket.onmessage = @onSocketMessage
+
+    @webSocketService = new WebSocketService(this, @webSocket);
+
     
     if $MAP?
       @map.refresh $MAP
 
-    @map.autogenerate()
+    # @map.autogenerate()
     
     # $("#playfield").draggable {
     #   axis : 'x'
@@ -66,9 +107,34 @@ class Application
       $(e.currentTarget).addClass 'selected'
       e.preventDefault()
 
+  onSocketOpen: (e) =>
+    # uri = parseUri(document.location)
+    # if ( uri.queryKey.oauth_token ) {
+    #   app.authorize(uri.queryKey.oauth_token, uri.queryKey.oauth_verifier)            
+    # }
+    
+  onSocketClose: =>
+    @webSocketService.connectionClosed()
+    
+  onSocketMessage: (e) =>
+    data = null
+    
+    try
+      data = JSON.parse(e.data)
+    catch e
+      console.log "Unable to parse message"
+      return
+
+    @webSocketService.processMessage(data);
+    
   addPlayer: ->
-    @player = new Player
+    @player = new Player($PLAYER)
     setInterval @tick, 33
+    setInterval @networkTick, 200
+
+    for player in $PLAYERS
+      if player.id != @player.id
+        new Player(player)
 
     $.keys = {}
     $.keyCodes = {ALT:18,BACKSPACE:8,CAPS_LOCK:20,COMMA:188,COMMAND:91,COMMAND_LEFT:91,COMMAND_RIGHT:93,CONTROL:17,DELETE:46,DOWN:40,END:35,ENTER:13,ESCAPE:27,HOME:36,INSERT:45,LEFT:37,MENU:93,NUMPAD_ADD:107,NUMPAD_DECIMAL:110,NUMPAD_DIVIDE:111,NUMPAD_ENTER:108,NUMPAD_MULTIPLY:106,NUMPAD_SUBTRACT:109,PAGE_DOWN:34,PAGE_UP:33,PERIOD:190,RIGHT:39,SHIFT:16,SPACE:32,TAB:9,UP:38,WINDOWS:91}
@@ -82,6 +148,10 @@ class Application
   tick: =>
     @player.draw()
     @player.tick()
+
+  networkTick: =>
+    if not @player.dead
+      @webSocketService.sendUpdate @player
     
   onclick: (e) =>
     $(".menu:visible").fadeOut()

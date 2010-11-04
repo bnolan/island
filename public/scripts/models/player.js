@@ -1,27 +1,35 @@
 (function() {
   var Player;
-  var __bind = function(func, context) {
+  var __extends = function(child, parent) {
+    function ctor() { this.constructor = child; }
+    ctor.prototype = parent.prototype;
+    child.prototype = new ctor;
+    if (typeof parent.extended === "function") parent.extended(child);
+    child.__super__ = parent.prototype;
+  }, __bind = function(func, context) {
     return function() { return func.apply(context, arguments); };
   };
   Player = (function() {
     function Player() {
+      Player.__super__.constructor.apply(this, arguments);
       this.div = $("<div />").addClass('player');
       this.avatar = $("<img />").attr('src', '/system/uploads/34/original/boy.png?1288307760').addClass('avatar').appendTo(this.div);
       this.shadow = $("<img />").attr('src', '/images/shadows/player.png').addClass('shadow').appendTo(this.div);
       this.velocity = new Vector(0, 0, 0);
-      this.position = new Vector(250, 360, 150);
+      this.position = new Vector(this.get('x'), this.get('y'), this.get('z'));
       this.radius = new Vector(30, 10, 0);
       this.jumpTimer = 10;
       this.draw();
       this.dead = false;
-      this.healthBar = $("#health");
       this.health = 10;
       this.maxHealth = 15;
+      this.healthBar = $("#health");
       this.animateHealth();
       return this;
     }
     return Player;
   })();
+  __extends(Player, Model);
   Player.prototype.notifyAction = function(text) {
     var label, y;
     y = parseInt(this.avatar.css('top')) + 60;
@@ -216,6 +224,13 @@
   };
   Player.prototype.groundHeight = function() {
     return this.getStack() ? this.getStack().height(this.position.x, this.position.y) : 0;
+  };
+  Player.prototype.getUpdateAttributes = function() {
+    return {
+      position: this.position.toWire(),
+      velocity: this.position.toWire(),
+      id: this.id
+    };
   };
   this.Player = Player;
 }).call(this);
