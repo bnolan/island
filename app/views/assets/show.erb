@@ -21,6 +21,16 @@
   </div>
   
   <div class="f">
+    <%= f.label :anchor_x %>
+    <%= f.text_field :anchor_x %>
+  </div>
+
+  <div class="f">
+    <%= f.label :anchor_y %>
+    <%= f.text_field :anchor_y %>
+  </div>
+
+  <div class="f">
     <%= f.label :kind %>
     <%= f.select :kind, Asset.kinds %>
   </div>

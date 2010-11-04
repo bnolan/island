@@ -48,6 +48,14 @@ class Stack
     else
       @tiles.length * 40
     
+  pop: ->
+    @tiles.pop()
+
+    for stack in getNeighbours()
+      stack.redrawShadows()
+
+    @redrawShadows()
+    
   push: (tile) ->
     @tiles.push tile
     tile.draw()
@@ -97,5 +105,14 @@ class Stack
     
   isEmpty: ->
     @tiles.length == 0
+    
+  # Maximum stack height of 4
+  isFull: ->
+    @tiles.length >= 4
 
+  getCenter: ->
+    new Vector(
+      (@x+0.5) * @map.gridWidth, (@y+0.5) * @map.gridHeight
+    )
+    
 this.Stack = Stack

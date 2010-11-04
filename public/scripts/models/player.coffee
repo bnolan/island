@@ -16,8 +16,50 @@ class Player
     
     @dead = false
     
+    @healthBar = $("#health")
+    @health = 10
+    @maxHealth = 15
+    
+    @animateHealth()
+
+  notifyAction: (text) ->
+    y = parseInt(@avatar.css('top')) + 60
+    
+    label = $("<label />").text(text).addClass('action')
+    label.appendTo @div
+    label.css({ top : y }).animate({ top : y - 15 }, 500, 'linear').animate { top : y - 30, opacity: 0}, 500, 'linear', =>
+      label.remove()
+    
+  addHealth: (x, sender) ->
+    @health = Math.min(@health + x, @maxHealth)
+    @animateHealth()
+  
+  removeHealth: (x, sender) ->
+    @health = Math.max(@health - x, 0)
+    @animateHealth()
+    
+    if @health == 0
+      @deathBy(sender)
+      
+  animateHealth: ->
+    percentage = 100 / @maxHealth * @health
+    @healthBar.find('span').stop().animate { width : "#{percentage}%" }, 1000
+    @healthBar.find('label').text @health
+    
+  dropItem: (item) ->
+    item.set {
+      x : @position.x + @radius.x
+      y : @position.y + 5
+    }
+    item.show()
+    
+  say: (message) ->
+    $("<div />").addClass("speech").html("<label>#{message}</label>").appendTo @div
+    
   deathBy: (sender) ->
     @dead = true
+
+    @say "FUUUU!!"
     
     if sender instanceof Tile
       if sender.isWater()
@@ -29,7 +71,7 @@ class Player
         app.playerDied("from trying to swim in the deadly molten lava.")
     
     if sender == "falling"
-      @div.animate { opacity : 0, 'margin-top' : 50 }, 200
+      @div.animate { opacity : 0, 'margin-top' : 500 }, 1000, 'linear'
       app.playerDied("from falling to the unknown regions far far below.")
     
   tick: ->
@@ -91,7 +133,7 @@ class Player
 
     # Check for death states
     
-    if @position.z < -100
+    if @position.z < 0
       @deathBy 'falling'
       
     if tile
@@ -133,7 +175,7 @@ class Player
     @velocity.z = Math.clamp(@velocity.z, -20, 20)
     
   groundContact: ->
-    @position.z <= @groundHeight()
+    @position.z <= app.map.getHeightByRadius(@position, @radius) + 5
     
   altitude: ->
     @position.z

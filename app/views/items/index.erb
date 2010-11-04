@@ -1,0 +1,18 @@
+
+<h1>
+  Items
+</h1>
+
+<ul class="actions">
+  <li><%= link_to 'New Item', new_item_url %></li>
+</ul>
+
+<table>
+  <% @items.each do |item| %>
+  <tr>
+    <td><%= link_to item.name, item %></td>
+    <td><%= item.description %></td>
+  </tr>
+  <% end %>
+</table>
+      

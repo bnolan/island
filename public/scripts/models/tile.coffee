@@ -9,6 +9,8 @@ class Tile
     @div = $("<div />").addClass 'tile'
     @img = $("<img />").attr('src', @asset.getImageUrl()).appendTo @div
     
+    @div.click @onclick
+    
   draw: ->
     x = @stack.x
     y = @stack.y
@@ -18,7 +20,7 @@ class Tile
     @div.css { 
       position : 'absolute'
       left : x * @gridWidth
-      top : y * @gridHeight - @div.height() - 50 - height
+      top : y * @gridHeight - @div.height() - 5 - height
       'z-index' : y * @gridHeight + height
     }
     
@@ -34,20 +36,24 @@ class Tile
     for stack in @stack.getNeighbours()
       stack.redrawShadows()
     
+  remove: ->
+    @stack.pop()
+    @div.remove()
+    
   redrawShadows: ->
-    if @drawShadow()
-      @div.find('.shadow').remove()
+    @div.find('.shadow').remove()
 
-      if @stack.westernNeighbour() and (@stack.westernNeighbour().stackingHeight() > @stack.stackingHeight())
+    if @drawShadow()
+      if (@stack.westernNeighbour().stackingHeight() > @stack.stackingHeight())
         $("<img />").addClass('shadow').attr('src', '/images/shadows/west.png').appendTo @div
 
-      if @stack.easternNeighbour() and (@stack.easternNeighbour().stackingHeight() > @stack.stackingHeight())
+      if (@stack.easternNeighbour().stackingHeight() > @stack.stackingHeight())
         $("<img />").addClass('shadow').attr('src', '/images/shadows/east.png').appendTo @div
 
       # if @stack.northernNeighbour() and (@stack.northernNeighbour().stackingHeight() < @stack.stackingHeight())
       #   $("<img />").addClass('shadow').attr('src', '/images/shadows/south.png').css({ top : -40 }).appendTo @div
 
-      if @stack.northernNeighbour() and (@stack.northernNeighbour().stackingHeight() > @stack.stackingHeight())
+      if (@stack.northernNeighbour().stackingHeight() > @stack.stackingHeight())
         $("<img />").addClass('shadow').attr('src', '/images/shadows/north.png').appendTo @div
 
       # if @stack.northWesternNeighbour() and (@stack.northWesternNeighbour().stackingHeight() > @stack.stackingHeight())
@@ -59,6 +65,34 @@ class Tile
       (@asset.get('height_east') - @asset.get('height_west')) * x + @asset.get('height_west')
     else
       40
+    
+  getName: ->
+    @asset.get('name')
+    
+  getDescription: ->
+    ""
+    
+  onclick: (e) =>
+    position = @div.offset()
+
+    ul = $(".menu").css({ left : e.clientX - 80, top : e.clientY - 90 }).hide().find('ul').empty()
+    
+    $(".menu .description").text @getDescription()
+    $(".menu .name").text @getName()
+    
+    $("<li />").text("Destroy").appendTo(ul).click (e) =>
+      $(".menu").fadeOut()
+      e.preventDefault()
+      @onDestroy(app.player)
+    
+    $(".menu").css({ left : e.clientX - 80, top : e.clientY - $(".menu").height() - 40 }).fadeIn()
+    
+    e.preventDefault()
+    e.stopPropagation()
+
+  onDestroy: ->
+    # >..
+    @remove()
     
   isRamp: ->
     @asset.get('name').match /ramp/i

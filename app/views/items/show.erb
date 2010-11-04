@@ -14,3 +14,7 @@
 <ul class="actions">
   <li><%= link_to 'Edit', edit_item_url(@item) %></li>
 </ul>
+
+<script>
+  $ITEM = <%= @item.to_json %>;
+</script>

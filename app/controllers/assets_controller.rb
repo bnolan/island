@@ -2,7 +2,7 @@ class AssetsController < ApplicationController
   
   def create
     params[:asset][:upload].each do |upload|
-      Asset.create! :name => upload.original_filename, :upload => upload, :description => "Uploaded #{Date.today.to_s}"
+      Asset.create! :name => upload.original_filename.sub(/\.png/,''), :upload => upload, :description => "Uploaded #{Date.today.to_s}"
     end
     
     redirect_to assets_url

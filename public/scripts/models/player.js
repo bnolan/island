@@ -1,5 +1,8 @@
 (function() {
   var Player;
+  var __bind = function(func, context) {
+    return function() { return func.apply(context, arguments); };
+  };
   Player = (function() {
     function Player() {
       this.div = $("<div />").addClass('player');
@@ -11,12 +14,60 @@
       this.jumpTimer = 10;
       this.draw();
       this.dead = false;
+      this.healthBar = $("#health");
+      this.health = 10;
+      this.maxHealth = 15;
+      this.animateHealth();
       return this;
     }
     return Player;
   })();
+  Player.prototype.notifyAction = function(text) {
+    var label, y;
+    y = parseInt(this.avatar.css('top')) + 60;
+    label = $("<label />").text(text).addClass('action');
+    label.appendTo(this.div);
+    return label.css({
+      top: y
+    }).animate({
+      top: y - 15
+    }, 500, 'linear').animate({
+      top: y - 30,
+      opacity: 0
+    }, 500, 'linear', __bind(function() {
+      return label.remove();
+    }, this));
+  };
+  Player.prototype.addHealth = function(x, sender) {
+    this.health = Math.min(this.health + x, this.maxHealth);
+    return this.animateHealth();
+  };
+  Player.prototype.removeHealth = function(x, sender) {
+    this.health = Math.max(this.health - x, 0);
+    this.animateHealth();
+    return this.health === 0 ? this.deathBy(sender) : void 0;
+  };
+  Player.prototype.animateHealth = function() {
+    var percentage;
+    percentage = 100 / this.maxHealth * this.health;
+    this.healthBar.find('span').stop().animate({
+      width: "" + percentage + "%"
+    }, 1000);
+    return this.healthBar.find('label').text(this.health);
+  };
+  Player.prototype.dropItem = function(item) {
+    item.set({
+      x: this.position.x + this.radius.x,
+      y: this.position.y + 5
+    });
+    return item.show();
+  };
+  Player.prototype.say = function(message) {
+    return $("<div />").addClass("speech").html("<label>" + message + "</label>").appendTo(this.div);
+  };
   Player.prototype.deathBy = function(sender) {
     this.dead = true;
+    this.say("FUUUU!!");
     if (sender instanceof Tile) {
       if (sender.isWater()) {
         this.div.addClass('drowned');
@@ -30,8 +81,8 @@
     if (sender === "falling") {
       this.div.animate({
         opacity: 0,
-        'margin-top': 50
-      }, 200);
+        'margin-top': 500
+      }, 1000, 'linear');
       return app.playerDied("from falling to the unknown regions far far below.");
     }
   };
@@ -81,7 +132,7 @@
     } else {
       this.velocity.z -= 1;
     }
-    if (this.position.z < -100) {
+    if (this.position.z < 0) {
       this.deathBy('falling');
     }
     if (tile) {
@@ -128,7 +179,7 @@
     return this.velocity.z = Math.clamp(this.velocity.z, -20, 20);
   };
   Player.prototype.groundContact = function() {
-    return this.position.z <= this.groundHeight();
+    return this.position.z <= app.map.getHeightByRadius(this.position, this.radius) + 5;
   };
   Player.prototype.altitude = function() {
     return this.position.z;

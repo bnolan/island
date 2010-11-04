@@ -46,6 +46,16 @@
   Stack.prototype.stackingHeight = function() {
     return this.isEmpty() ? GroundHeight : this.tiles.length * 40;
   };
+  Stack.prototype.pop = function() {
+    var _i, _len, _ref, stack;
+    this.tiles.pop();
+    _ref = getNeighbours();
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      stack = _ref[_i];
+      stack.redrawShadows();
+    }
+    return this.redrawShadows();
+  };
   Stack.prototype.push = function(tile) {
     this.tiles.push(tile);
     return tile.draw();
@@ -84,6 +94,12 @@
   };
   Stack.prototype.isEmpty = function() {
     return this.tiles.length === 0;
+  };
+  Stack.prototype.isFull = function() {
+    return this.tiles.length >= 4;
+  };
+  Stack.prototype.getCenter = function() {
+    return new Vector((this.x + 0.5) * this.map.gridWidth, (this.y + 0.5) * this.map.gridHeight);
   };
   this.Stack = Stack;
 }).call(this);

@@ -4,6 +4,9 @@
 
 <h1><%= @item.name %></h1>
 
+<div id="item-viewer">
+</div>
+
 <ul class="actions">
   <li><%= link_to 'Delete', @item, :method => :delete %></li>
 </ul>
@@ -16,5 +19,23 @@
 
 <% end %>
 
-<div id="container">
-</div>
+<script>
+
+x = {
+  onIdle : function(){
+    this.el.effect('bounce');
+  },
+  
+  getVerbs : function(){
+    return ["pickup"];
+  },
+  
+  onRemove : function(){
+    this.el.fadeOut();
+    // new Sound("...");​
+  }
+
+};
+
+  $ITEM = <%= @item.to_json.html_safe.gsub(/\u200/,'').gsub('\\b','') %>;
+</script>

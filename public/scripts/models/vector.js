@@ -15,5 +15,8 @@
   Vector.prototype.subtract = function(v) {
     return new Vector(this.x - v.x, this.y - v.y, this.z - v.z);
   };
+  Vector.prototype.toString = function() {
+    return "" + this.x + "," + this.y + "," + this.z;
+  };
   this.Vector = Vector;
 }).call(this);

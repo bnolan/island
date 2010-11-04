@@ -1,6 +1,9 @@
 Math.clamp = (v, min, max) ->
   Math.min(Math.max(min, v), max)
 
+String.prototype.capitalize = ->
+  this.charAt(0).toUpperCase() + this.slice(1);
+
 class Model
   constructor: ->
     Backbone.Model.apply(this, arguments)
@@ -9,13 +12,34 @@ _.extend(Model::, Backbone.Model.prototype)
 
 this.Model = Model
     
+class Playfield
+  constructor: (parent) ->
+    @container = $(parent).addClass('game-container')
+    
+    @el = $("<div id='playfield' />").appendTo @container
+    
+    window.app = new Application
+    this.app = window.app
+
+  setCenter: (x,y) ->
+    @el.css { 
+      left : 0 + @container.width() / 2 - x
+      top: 0 + @container.height() / 2 - y
+    }
+    
+this.Playfield = Playfield
+
 class Application
   constructor: ->
     @gridWidth = 100
     @gridHeight = 80
 
-    Assets.refresh $ASSETS
+    if $ASSETS?
+      Assets.refresh $ASSETS
     
+    if $ITEMS?
+      Items.refresh $ITEMS
+
     @canvasWidth = $(document).width()
     @canvasHeight = $(document).height()
     
@@ -26,10 +50,24 @@ class Application
     @draw()
     
     @map = new Map
-    @map.refresh $MAP
     
+    if $MAP?
+      @map.refresh $MAP
+
+    @map.autogenerate()
+    
+    # $("#playfield").draggable {
+    #   axis : 'x'
+    # }
+    $("#playfield").click @onclick
+    
+    $(".toolbox .asset").click (e) ->
+      $(".toolbox .asset").removeClass('selected')
+      $(e.currentTarget).addClass 'selected'
+      e.preventDefault()
+
+  addPlayer: ->
     @player = new Player
-    
     setInterval @tick, 33
 
     $.keys = {}
@@ -40,29 +78,22 @@ class Application
 
     $(document).keyup (e) =>
       $.keys[e.keyCode] = false
-
-    $("#playfield").draggable {
-      axis : 'x'
-    }
-    $("#playfield").click @onclick
-    
-    $(".toolbox .asset").click (e) ->
-      $(".toolbox .asset").removeClass('selected')
-      $(e.currentTarget).addClass 'selected'
-      e.preventDefault()
     
   tick: =>
     @player.draw()
     @player.tick()
     
   onclick: (e) =>
-    x = e.clientX - @el.offset().left
-    y = e.clientY - @el.offset().top
+    $(".menu:visible").fadeOut()
+
+    if $(".asset.selected").length > 0
+      x = e.clientX - @el.offset().left
+      y = e.clientY - @el.offset().top
     
-    x = Math.floor x / @gridWidth
-    y = Math.floor y / @gridHeight
+      x = Math.floor x / @gridWidth
+      y = Math.floor y / @gridHeight
     
-    @addTile x, y
+      @addTile x, y
     
   addTile: (x,y) ->
     index = "#{x},#{y}"

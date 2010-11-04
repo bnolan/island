@@ -3,7 +3,78 @@ class Map
     @stacks = {}
     @gridWidth = 100
     @gridHeight = 80
+    @maxY = 8
+    @maxX = 100
 
+  autogenerate: ->
+    x = 1
+    y = 3
+    w = 2
+    h = 2
+    
+    grass = Assets.find (asset) ->
+      asset.get('name').match /grass/i
+
+    dirt = Assets.find (asset) ->
+      asset.get('name').match /dirt/i
+    
+    for xx from x to x + w
+      for yy from y to y + h
+        stack = @get(xx,yy)
+        
+        if not stack.isFull()
+          stack.newTile Assets.first()
+
+    for j from 1 to 100
+      x = Math.floor(Math.random() * @maxX)
+      y = Math.floor(Math.random() * @maxY - 1) + 1
+      
+      w = Math.floor(Math.random() * 4)
+      h = Math.floor(Math.random() * Math.min(3, @maxY - y))
+      
+      for xx from x to x + w
+        for yy from y to y + h
+          stack = @get(xx,yy)
+          
+          if not stack.isFull()
+            stack.newTile(
+              if Math.random() < 0.5 
+                dirt
+              else
+                grass
+            )
+            
+    # @addItems()
+    
+  addItems: ->
+    tree = Items.find (item) ->
+      item.get('name').match /tree/i
+
+    rock = Items.find (item) ->
+      item.get('name').match /rock/i
+
+    for j from 1 to 100
+      stack = @get(-1, -1)
+
+      # Find a non-empty tile
+      while stack.isEmpty()
+        x = Math.floor(Math.random() * @maxX)
+        y = Math.floor(Math.random() * @maxY - 1) + 1
+        stack = @get(x, y)
+
+      position = stack.getCenter()
+      
+      item = if Math.random() < 0.5
+        rock.clone()
+      else
+        tree.clone()
+        
+      item.set({
+        x : position.x
+        y : position.y
+      })
+      item.show()
+    
   get: (x,y) ->
     index = "#{x},#{y}"
 
