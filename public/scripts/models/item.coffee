@@ -71,8 +71,9 @@ class Item extends Model
     e.preventDefault()
     e.stopPropagation()
   
+  # Removes the item from the world
   remove: ->
-    @div.hide()
+    @div.hide().remove()
     @div = null
       
   redraw: ->
@@ -111,6 +112,9 @@ class Item extends Model
 
 Items = new Backbone.Collection
 Items.model = Item
+Items.findByName = (name) ->
+  Items.find (item) ->
+    item.get('name') == name
 
 this.Items = Items
 this.Item = Item

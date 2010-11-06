@@ -1,5 +1,5 @@
 (function() {
-  var Player;
+  var Inventory, Player;
   var __extends = function(child, parent) {
     function ctor() { this.constructor = child; }
     ctor.prototype = parent.prototype;
@@ -9,9 +9,34 @@
   }, __bind = function(func, context) {
     return function() { return func.apply(context, arguments); };
   };
+  Inventory = (function() {
+    function Inventory(player) {
+      this.player = player;
+      Inventory.__super__.constructor.call(this);
+      return this;
+    }
+    return Inventory;
+  })();
+  __extends(Inventory, Backbone.Collection);
+  Inventory.prototype.add = function(item) {
+    this._add(item);
+    return this.save();
+  };
+  Inventory.prototype.save = function() {
+    this.player.set({
+      'inventory': this.pluck('id').join(",")
+    });
+    return this.player.save();
+  };
+  Inventory.prototype.findByName = function(name) {
+    return this.find(function(item) {
+      return item.get('name') === name;
+    });
+  };
   Player = (function() {
     function Player() {
       Player.__super__.constructor.apply(this, arguments);
+      this.inventory = new Inventory(this);
       this.div = $("<div />").addClass('player');
       this.avatar = $("<img />").attr('src', '/system/uploads/34/original/boy.png?1288307760').addClass('avatar').appendTo(this.div);
       this.shadow = $("<img />").attr('src', '/images/shadows/player.png').addClass('shadow').appendTo(this.div);
@@ -30,6 +55,25 @@
     return Player;
   })();
   __extends(Player, Model);
+  Player.prototype.doAction = function(actionName, time, callBack) {
+    return {
+      func: __bind(function() {
+        time--;
+        if (time > 0) {
+          this.notifyAction(actionName);
+          return setTimeout(func, 1000);
+        } else {
+          return callback();
+        }
+      }, this)
+    };
+  };
+  Player.prototype.pickup = function(item) {
+    this.notifyAction(item.name);
+    this.inventory.add(item);
+    item.remove();
+    return item.save();
+  };
   Player.prototype.notifyAction = function(text) {
     var label, y;
     y = parseInt(this.avatar.css('top')) + 60;
@@ -72,6 +116,9 @@
   };
   Player.prototype.say = function(message) {
     return $("<div />").addClass("speech").html("<label>" + message + "</label>").appendTo(this.div);
+  };
+  Player.prototype.canPerform = function(verb) {
+    return verb.canBePerformedBy(this);
   };
   Player.prototype.deathBy = function(sender) {
     this.dead = true;
@@ -192,22 +239,38 @@
   Player.prototype.altitude = function() {
     return this.position.z;
   };
-  Player.prototype.draw = function() {
+  Player.prototype.draw = function(latency) {
     var altitude, height;
     if (this.div.parent().length === 0) {
-      this.div.appendTo('#playfield').hide().fadeIn();
+      this.div.appendTo('#playfield').show();
     }
     height = 120;
     altitude = this.altitude();
+    if (latency) {
+      this.div.stop().animate({
+        top: this.position.y,
+        left: this.position.x
+      }, latency, 'linear');
+    } else {
+      this.div.css({
+        top: this.position.y,
+        left: this.position.x
+      });
+    }
     this.div.css({
-      top: this.position.y,
-      left: this.position.x,
       'z-index': parseInt(this.position.y + altitude) + 10
     });
-    this.avatar.css({
-      top: 0 - altitude - height - 15,
-      left: -50
-    });
+    if (latency) {
+      this.avatar.stop().animate({
+        top: 0 - altitude - height - 15,
+        left: -50
+      }, latency, 'linear');
+    } else {
+      this.avatar.css({
+        top: 0 - altitude - height - 15,
+        left: -50
+      });
+    }
     return this.shadow.css({
       top: 0 - this.groundHeight() - 20,
       left: -25

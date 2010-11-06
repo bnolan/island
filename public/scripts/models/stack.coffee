@@ -60,8 +60,15 @@ class Stack
     @tiles.push tile
     tile.draw()
 
+  #
+  # Can be an asset or a tile class
+  #
   newTile: (asset) ->
-    tile = new Tile(this, asset)
+    if typeof asset == 'function'
+      tile = new asset(this)
+    else
+      tile = new Tile(this, asset)
+
     @push tile
     
   getTop: ->

@@ -85,7 +85,7 @@
     return e.stopPropagation();
   };
   Item.prototype.remove = function() {
-    this.div.hide();
+    this.div.hide().remove();
     return this.div = null;
   };
   Item.prototype.redraw = function() {
@@ -117,6 +117,11 @@
   };
   Items = new Backbone.Collection;
   Items.model = Item;
+  Items.findByName = function(name) {
+    return Items.find(function(item) {
+      return item.get('name') === name;
+    });
+  };
   this.Items = Items;
   this.Item = Item;
 }).call(this);

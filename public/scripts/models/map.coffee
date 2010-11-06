@@ -41,7 +41,7 @@ class Map
               if Math.random() < 0.5 
                 dirt
               else
-                grass
+                GrassTile
             )
             
     # @addItems()

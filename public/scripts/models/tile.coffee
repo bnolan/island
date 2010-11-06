@@ -65,27 +65,40 @@ class Tile
       (@asset.get('height_east') - @asset.get('height_west')) * x + @asset.get('height_west')
     else
       40
-    
+  
+  # Should be overridden
   getName: ->
     @asset.get('name')
     
+  # Should be overridden
   getDescription: ->
     ""
     
+  # Should be overridden
+  verbs: ->
+    []
+    
   onclick: (e) =>
-    position = @div.offset()
+    # position = @div.offset()
 
-    ul = $(".menu").css({ left : e.clientX - 80, top : e.clientY - 90 }).hide().find('ul').empty()
+    player = app.player
     
-    $(".menu .description").text @getDescription()
-    $(".menu .name").text @getName()
+    menu = new PopupMenu e
     
-    $("<li />").text("Destroy").appendTo(ul).click (e) =>
-      $(".menu").fadeOut()
-      e.preventDefault()
-      @onDestroy(app.player)
+    menu.setName @getName()
+    menu.setDescription @getDescription()
     
-    $(".menu").css({ left : e.clientX - 80, top : e.clientY - $(".menu").height() - 40 }).fadeIn()
+    for verb in @verbs()
+      func = this[verb.getCallbackName()]
+
+      if player.canPerform verb
+        # Add the menu item to do it
+        menu.addMenuItem verb.getName(), verb.getDescription(), =>
+          func.call(this, player)
+      else
+        menu.addDisabledMenuItem verb.getName(), verb.getRequirements()
+    
+    menu.show()
     
     e.preventDefault()
     e.stopPropagation()

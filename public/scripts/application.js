@@ -50,8 +50,12 @@
     return console.log('Connection closed');
   };
   WebSocketService.prototype.updateHandler = function(data) {
-    console.log('update');
-    return console.log(data);
+    var player;
+    player = this.app.players[2];
+    player.position.x = data.position[0];
+    player.position.y = data.position[1];
+    player.position.z = data.position[2];
+    return player.draw(200);
   };
   WebSocketService.prototype.processMessage = function(data) {
     var func;
@@ -86,6 +90,7 @@
       this.canvasHeight = $(document).height();
       this.el = $("<canvas />").attr('width', this.canvasWidth).attr('height', this.canvasHeight).appendTo('#playfield');
       this.ctx = this.el[0].getContext('2d');
+      this.players = {};
       this.draw();
       this.map = new Map;
       this.webSocket = new WebSocket("ws://localhost:8180");
@@ -93,9 +98,7 @@
       this.webSocket.onclose = this.onSocketClose;
       this.webSocket.onmessage = this.onSocketMessage;
       this.webSocketService = new WebSocketService(this, this.webSocket);
-      if (typeof $MAP !== "undefined" && $MAP !== null) {
-        this.map.refresh($MAP);
-      }
+      this.map.autogenerate();
       $("#playfield").click(this.onclick);
       $(".toolbox .asset").click(function(e) {
         $(".toolbox .asset").removeClass('selected');
@@ -114,8 +117,9 @@
     data = null;
     try {
       data = JSON.parse(e.data);
-    } catch (e) {
+    } catch (err) {
       console.log("Unable to parse message");
+      console.log(e.data);
       return;
     }
     return this.webSocketService.processMessage(data);
@@ -128,7 +132,7 @@
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       player = _ref[_i];
       if (player.id !== this.player.id) {
-        new Player(player);
+        this.players[player.id] = new Player(player);
       }
     }
     $.keys = {};

@@ -44,8 +44,14 @@ class WebSocketService
     console.log 'Connection closed'
     
   updateHandler: (data) ->
-    console.log 'update'
-    console.log data
+    player = @app.players[2]
+    
+    player.position.x = data.position[0]
+    player.position.y = data.position[1]
+    player.position.z = data.position[2]
+    
+    player.draw(200)
+    
     
   processMessage: (data) ->
     func = this[data.type + 'Handler']
@@ -80,6 +86,8 @@ class Application
     
     @ctx = @el[0].getContext '2d'
     
+    @players = {}
+    
     @draw()
     
     @map = new Map
@@ -92,10 +100,10 @@ class Application
     @webSocketService = new WebSocketService(this, @webSocket);
 
     
-    if $MAP?
-      @map.refresh $MAP
+    # if $MAP?
+    #   @map.refresh $MAP
 
-    # @map.autogenerate()
+    @map.autogenerate()
     
     # $("#playfield").draggable {
     #   axis : 'x'
@@ -121,8 +129,9 @@ class Application
     
     try
       data = JSON.parse(e.data)
-    catch e
+    catch err
       console.log "Unable to parse message"
+      console.log e.data
       return
 
     @webSocketService.processMessage(data);
@@ -134,7 +143,7 @@ class Application
 
     for player in $PLAYERS
       if player.id != @player.id
-        new Player(player)
+        @players[player.id] = new Player(player)
 
     $.keys = {}
     $.keyCodes = {ALT:18,BACKSPACE:8,CAPS_LOCK:20,COMMA:188,COMMAND:91,COMMAND_LEFT:91,COMMAND_RIGHT:93,CONTROL:17,DELETE:46,DOWN:40,END:35,ENTER:13,ESCAPE:27,HOME:36,INSERT:45,LEFT:37,MENU:93,NUMPAD_ADD:107,NUMPAD_DECIMAL:110,NUMPAD_DIVIDE:111,NUMPAD_ENTER:108,NUMPAD_MULTIPLY:106,NUMPAD_SUBTRACT:109,PAGE_DOWN:34,PAGE_UP:33,PERIOD:190,RIGHT:39,SHIFT:16,SPACE:32,TAB:9,UP:38,WINDOWS:91}

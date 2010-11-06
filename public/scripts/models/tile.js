@@ -67,23 +67,27 @@
   Tile.prototype.getDescription = function() {
     return "";
   };
+  Tile.prototype.verbs = function() {
+    return [];
+  };
   Tile.prototype.onclick = function(e) {
-    position = this.div.offset();
-    ul = $(".menu").css({
-      left: e.clientX - 80,
-      top: e.clientY - 90
-    }).hide().find('ul').empty();
-    $(".menu .description").text(this.getDescription());
-    $(".menu .name").text(this.getName());
-    $("<li />").text("Destroy").appendTo(ul).click(__bind(function(e) {
-      $(".menu").fadeOut();
-      e.preventDefault();
-      return this.onDestroy(app.player);
-    }, this));
-    $(".menu").css({
-      left: e.clientX - 80,
-      top: e.clientY - $(".menu").height() - 40
-    }).fadeIn();
+    player = app.player;
+    menu = new PopupMenu(e);
+    menu.setName(this.getName());
+    menu.setDescription(this.getDescription());
+    _ref = this.verbs();
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      verb = _ref[_i];
+      func = this[verb.getCallbackName()];
+      if (player.canPerform(verb)) {
+        menu.addMenuItem(verb.getName(), verb.getDescription(), __bind(function() {
+          return func.call(this, player);
+        }, this));
+      } else {
+        menu.addDisabledMenuItem(verb.getName(), verb.getRequirements());
+      }
+    }
+    menu.show();
     e.preventDefault();
     return e.stopPropagation();
   };

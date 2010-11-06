@@ -62,7 +62,11 @@
   };
   Stack.prototype.newTile = function(asset) {
     var tile;
-    tile = new Tile(this, asset);
+    if (typeof asset === 'function') {
+      tile = new asset(this);
+    } else {
+      tile = new Tile(this, asset);
+    }
     return this.push(tile);
   };
   Stack.prototype.getTop = function() {

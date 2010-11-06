@@ -180,7 +180,11 @@ canvas{
   position: relative;
 }
 
-.menu ul li:hover{
+.menu ul li.disabled{
+  color: #ccc;
+}
+
+.menu ul li.enabled:hover{
   background: rgba(255,0,90,0.5);
   color: white;
   border: 1px solid #f07;

@@ -18,7 +18,7 @@ require 'syslog'
 require "yaml"
 require 'socket'
 require 'timeout'
-require '../lib/socket_connection.rb'
+require './lib/socket_connection.rb'
 
 def is_port_open?(ip, port)
   begin
@@ -104,16 +104,15 @@ begin
   	  socket.onopen {
   	    origin = socket.request["Origin"]
     	  if WHITELIST.include?(origin) || DEV_MODE
+          # socket.onmessage { |message| 
+          #             json = JSON.parse(message) rescue {};
+          #   puts json.inspect
+          # }
+    	    SocketConnection.new(socket, channel) #, ConnectionStorage.new(db))
     	    puts 'connectorated'
-    	    
-      	  socket.onmessage { |message| 
-        	  json = JSON.parse(message) rescue {};
-      	    puts json.inspect
-      	  }
-
-    	    # TadpoleConnection.new(socket, channel, ConnectionStorage.new(db))
     	  else
     	    Syslog.warning("Connection from: #{ip}:#{port} at #{origin} did not match whitelist" )
+    	    puts("Connection from: #{ip}:#{port} at #{origin} did not match whitelist" )
   	      socket.close_connection
     	  end         
   	  }  	  

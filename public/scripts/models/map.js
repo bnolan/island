@@ -45,7 +45,7 @@
             _result3 = [];
             for (yy = y, _to4 = y + h; yy <= _to4; yy++) {
               stack = this.get(xx, yy);
-              _result3.push(!stack.isFull() ? stack.newTile(Math.random() < 0.5 ? dirt : grass) : void 0);
+              _result3.push(!stack.isFull() ? stack.newTile(Math.random() < 0.5 ? dirt : GrassTile) : void 0);
             }
             return _result3;
           }).call(this));

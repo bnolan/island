@@ -1,6 +1,25 @@
+class Inventory extends Backbone.Collection
+  constructor: (player) ->
+    @player = player
+    super()
+    
+  add: (item) ->
+    @_add item
+    @save()
+    
+  save: ->
+    @player.set { 'inventory' : @pluck('id').join(",") }
+    @player.save()
+  
+  findByName: (name) ->
+    @find (item) ->
+      item.get('name') == name
+
 class Player extends Model
   constructor: ->
     super
+    
+    @inventory = new Inventory(this)
     
     @div = $("<div />").addClass('player')
     
@@ -23,6 +42,29 @@ class Player extends Model
     @healthBar = $("#health")
     @animateHealth()
 
+  #
+  # Do an event that takes some time. Callback is called once the event has finished. Time
+  # is in seconds
+  #
+  doAction: (actionName, time, callBack) ->
+    func: =>
+      time--
+
+      if time > 0
+        @notifyAction actionName
+        setTimeout func, 1000
+      else
+        callback()
+    
+  #
+  #
+  #
+  pickup: (item) ->
+    @notifyAction item.name
+    @inventory.add item
+    item.remove()
+    item.save()
+  
   notifyAction: (text) ->
     y = parseInt(@avatar.css('top')) + 60
     
@@ -57,6 +99,9 @@ class Player extends Model
   say: (message) ->
     $("<div />").addClass("speech").html("<label>#{message}</label>").appendTo @div
     
+  canPerform: (verb) ->
+    verb.canBePerformedBy this
+
   deathBy: (sender) ->
     @dead = true
 
@@ -181,23 +226,39 @@ class Player extends Model
   altitude: ->
     @position.z
     
-  draw: ->
+  draw: (latency) ->
     if @div.parent().length==0
-      @div.appendTo('#playfield').hide().fadeIn()
+      @div.appendTo('#playfield').show()
 
     height = 120
     altitude = @altitude()
     
+    if latency
+      @div.stop().animate {
+        top : @position.y
+        left : @position.x
+      }, latency, 'linear'
+    else
+      @div.css {
+        top : @position.y
+        left : @position.x
+      }
+    
     @div.css {
-      top : @position.y
-      left : @position.x
       'z-index' : parseInt(@position.y + altitude) + 10
     }
     
-    @avatar.css { 
-      top : 0 - altitude - height - 15
-      left : -50
-    }
+    if latency
+      @avatar.stop().animate { 
+        top : 0 - altitude - height - 15
+        left : -50
+      }, latency, 'linear'
+    else
+      @avatar.css { 
+        top : 0 - altitude - height - 15
+        left : -50
+      }
+    
     @shadow.css { 
       top :  0 - @groundHeight()  - 20
       left : -25
