@@ -42,19 +42,12 @@ ActiveRecord::Schema.define(:version => 20101104055803) do
     t.string   "code"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "width"
-    t.integer  "height"
   end
 
   create_table "stacks", :force => true do |t|
     t.integer  "x"
     t.integer  "y"
     t.string   "tiles"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "tiles", :force => true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
   end
