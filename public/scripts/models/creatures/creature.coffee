@@ -5,7 +5,7 @@ class Creature extends Model
     super
 
   createElements: ->
-    @div = $("<div />").addClass('item').hide()
+    @div = $("<div />").addClass('creature').hide()
     @div.appendTo '#playfield'
 
     @shadow = $("<img />").attr('src', '/images/shadows/player.png').addClass('shadow').appendTo @div
@@ -29,6 +29,14 @@ class Creature extends Model
   #     for name, func of behaviours
   #       this[name] = func
   # 
+
+  notifyAction: (text) ->
+    y = parseInt(@icon.css('top')) + 10
+    
+    label = $("<label />").text(text).addClass('action')
+    label.appendTo @div
+    label.css({ top : y }).animate({ top : y - 15 }, 1000, 'linear').animate { top : y - 30, opacity: 0}, 1000, 'linear', =>
+      label.remove()
 
   show: ->
     @redraw()

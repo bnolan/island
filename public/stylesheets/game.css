@@ -116,6 +116,35 @@ canvas{
   top: -40px;
 }
 
+/*
+ * Creature
+ */ 
+ 
+.creature{
+  position: absolute;
+}
+.creature *{
+  position: absolute;
+}
+
+.creature .action{
+  color: white;
+  font-weight: bold;
+  text-shadow: 0 0 2px black;
+  position: absolute;
+  top: 0;
+  left: -50px;
+  font-size: 1.3em;
+  color: white;
+  width: 100px;
+  text-align: center;
+  line-height: 20px;
+}
+
+/*
+ * Item
+ */
+ 
 .item{
   position: absolute;
 }

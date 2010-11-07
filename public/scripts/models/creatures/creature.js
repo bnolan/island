@@ -6,6 +6,8 @@
     child.prototype = new ctor;
     if (typeof parent.extended === "function") parent.extended(child);
     child.__super__ = parent.prototype;
+  }, __bind = function(func, context) {
+    return function() { return func.apply(context, arguments); };
   };
   Creature = (function() {
     function Creature() {
@@ -19,13 +21,28 @@
   })();
   __extends(Creature, Model);
   Creature.prototype.createElements = function() {
-    this.div = $("<div />").addClass('item').hide();
+    this.div = $("<div />").addClass('creature').hide();
     this.div.appendTo('#playfield');
     this.shadow = $("<img />").attr('src', '/images/shadows/player.png').addClass('shadow').appendTo(this.div);
     this.icon = $("<img />").attr('src', '/images/creatures/zombie.png').addClass('icon').appendTo(this.div);
     this.icon.click(this.onclick);
     this.redraw();
     return this.show();
+  };
+  Creature.prototype.notifyAction = function(text) {
+    y = parseInt(this.icon.css('top')) + 10;
+    label = $("<label />").text(text).addClass('action');
+    label.appendTo(this.div);
+    return label.css({
+      top: y
+    }).animate({
+      top: y - 15
+    }, 1000, 'linear').animate({
+      top: y - 30,
+      opacity: 0
+    }, 1000, 'linear', __bind(function() {
+      return label.remove();
+    }, this));
   };
   Creature.prototype.show = function() {
     this.redraw();
