@@ -1,5 +1,7 @@
 class Creature extends Model
-  constructor: ->
+  constructor: () ->
+    # @map = map
+    
     super
 
   createElements: ->
@@ -44,6 +46,13 @@ class Creature extends Model
       
   getPosition: ->
     new Vector(@get('x'), @get('y'), 0)
+    
+  setPosition: (p) ->
+    @set {
+      x : p.x
+      y : p.y
+      z : p.z
+    }
     
   # todo: refactor into menu class
   onclick: (e) =>

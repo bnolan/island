@@ -39,6 +39,13 @@
   Creature.prototype.getPosition = function() {
     return new Vector(this.get('x'), this.get('y'), 0);
   };
+  Creature.prototype.setPosition = function(p) {
+    return this.set({
+      x: p.x,
+      y: p.y,
+      z: p.z
+    });
+  };
   Creature.prototype.onclick = function(e) {};
   Creature.prototype.remove = function() {
     this.div.hide().remove();

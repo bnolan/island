@@ -125,7 +125,7 @@
     return this.webSocketService.processMessage(data);
   };
   Application.prototype.addPlayer = function() {
-    this.creature = new Creature({
+    this.creature = new Zombie({
       x: 350,
       y: 360
     });
@@ -184,7 +184,9 @@
   };
   Application.prototype.tick = function() {
     this.player.draw();
-    return this.player.tick();
+    this.player.tick();
+    this.creature.redraw();
+    return this.creature.tick(1 / 33);
   };
   Application.prototype.networkTick = function() {
     return !this.player.dead ? this.webSocketService.sendUpdate(this.player) : void 0;

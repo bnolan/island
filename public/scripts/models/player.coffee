@@ -42,6 +42,9 @@ class Player extends Model
     @healthBar = $("#health")
     @animateHealth()
 
+  getPosition: ->
+    @position
+    
   #
   # Do an event that takes some time. Callback is called once the event has finished. Time
   # is in seconds
@@ -289,5 +292,23 @@ class Player extends Model
     }
     
 
+#
+#
+# Players collection
+#
+#
 
+Players = new Backbone.Collection
+Players.model = Player
+
+#
+# Returns up to 10 players that are nearest the position, sorted by nearest first. 
+#
+#   Fix me - needs to search for all nearest players.
+#
+Players.findNearestTo = (position) ->
+  _ [app.player]
+
+
+this.Players = Players
 this.Player = Player

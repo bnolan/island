@@ -1,5 +1,5 @@
 (function() {
-  var Inventory, Player;
+  var Inventory, Player, Players;
   var __extends = function(child, parent) {
     function ctor() { this.constructor = child; }
     ctor.prototype = parent.prototype;
@@ -55,6 +55,9 @@
     return Player;
   })();
   __extends(Player, Model);
+  Player.prototype.getPosition = function() {
+    return this.position;
+  };
   Player.prototype.doAction = function(actionName, time, callback) {
     var func;
     func = __bind(function() {
@@ -295,5 +298,11 @@
       id: this.id
     };
   };
+  Players = new Backbone.Collection;
+  Players.model = Player;
+  Players.findNearestTo = function(position) {
+    return _([app.player]);
+  };
+  this.Players = Players;
   this.Player = Player;
 }).call(this);

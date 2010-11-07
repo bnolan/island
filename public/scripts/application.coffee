@@ -137,7 +137,7 @@ class Application
     @webSocketService.processMessage(data);
     
   addPlayer: ->
-    @creature = new Creature { x : 350, y : 360}
+    @creature = new Zombie { x : 350, y : 360}
     @creature.show()
     
     @player = new Player($PLAYER)
@@ -160,6 +160,10 @@ class Application
   tick: =>
     @player.draw()
     @player.tick()
+    
+    @creature.redraw()
+    @creature.tick( 1 / 33 )
+    
 
   networkTick: =>
     if not @player.dead
