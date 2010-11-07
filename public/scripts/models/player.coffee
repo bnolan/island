@@ -23,12 +23,12 @@ class Player extends Model
     
     @div = $("<div />").addClass('player')
     
-    @avatar = $("<img />").attr('src', '/system/uploads/34/original/boy.png?1288307760').addClass('avatar').appendTo @div
+    @avatar = $("<img />").attr('src', '/images/avatars/hutchboy.png').addClass('avatar').appendTo @div
     @shadow = $("<img />").attr('src', '/images/shadows/player.png').addClass('shadow').appendTo @div
     
     @velocity = new Vector(0,0,0)
     @position = new Vector(@get('x'), @get('y'), @get('z'))
-    @radius = new Vector(30, 10, 0)
+    @radius = new Vector(20, 7, 0)
 
     # Pause between subsequent jumps
     @jumpTimer = 10
@@ -46,8 +46,8 @@ class Player extends Model
   # Do an event that takes some time. Callback is called once the event has finished. Time
   # is in seconds
   #
-  doAction: (actionName, time, callBack) ->
-    func: =>
+  doAction: (actionName, time, callback) ->
+    func = =>
       time--
 
       if time > 0
@@ -55,6 +55,8 @@ class Player extends Model
         setTimeout func, 1000
       else
         callback()
+    
+    func()
     
   #
   #
@@ -212,7 +214,7 @@ class Player extends Model
         @jumpTimer = 15
         @velocity.z = 10
         @position.z += 1
-        @avatar.css({ height : 150, width : 100, 'padding-top' : 20}).animate({ height : 170, width: 100, 'padding-top' : 0 })
+        @avatar.css({ height : 50, width : 66, 'padding-top' : 20}).animate({ height : 70, width : 66, 'padding-top' : 0 })
         
         # @avatar.css { '-webkit-transform' : 'rotate(90deg)' }
 
@@ -230,7 +232,7 @@ class Player extends Model
     if @div.parent().length==0
       @div.appendTo('#playfield').show()
 
-    height = 120
+    height = 70
     altitude = @altitude()
     
     if latency
@@ -250,13 +252,13 @@ class Player extends Model
     
     if latency
       @avatar.stop().animate { 
-        top : 0 - altitude - height - 15
-        left : -50
+        top : 0 - altitude - height + 8
+        left : -30
       }, latency, 'linear'
     else
       @avatar.css { 
-        top : 0 - altitude - height - 15
-        left : -50
+        top : 0 - altitude - height + 8
+        left : -30
       }
     
     @shadow.css { 

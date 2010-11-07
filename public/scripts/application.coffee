@@ -137,6 +137,9 @@ class Application
     @webSocketService.processMessage(data);
     
   addPlayer: ->
+    @creature = new Creature { x : 350, y : 360}
+    @creature.show()
+    
     @player = new Player($PLAYER)
     setInterval @tick, 33
     setInterval @networkTick, 200

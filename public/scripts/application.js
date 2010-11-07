@@ -125,6 +125,11 @@
     return this.webSocketService.processMessage(data);
   };
   Application.prototype.addPlayer = function() {
+    this.creature = new Creature({
+      x: 350,
+      y: 360
+    });
+    this.creature.show();
     this.player = new Player($PLAYER);
     setInterval(this.tick, 33);
     setInterval(this.networkTick, 200);

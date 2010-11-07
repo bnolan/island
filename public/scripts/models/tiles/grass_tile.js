@@ -37,8 +37,7 @@
     var item;
     item = Items.findByName("Compost");
     return player.doAction("Digging", "5", __bind(function() {
-      this.remove();
-      return player.pickup(item);
+      return this.remove();
     }, this));
   };
   GrassTile.prototype.getName = function() {

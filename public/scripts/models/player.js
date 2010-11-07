@@ -38,11 +38,11 @@
       Player.__super__.constructor.apply(this, arguments);
       this.inventory = new Inventory(this);
       this.div = $("<div />").addClass('player');
-      this.avatar = $("<img />").attr('src', '/system/uploads/34/original/boy.png?1288307760').addClass('avatar').appendTo(this.div);
+      this.avatar = $("<img />").attr('src', '/images/avatars/hutchboy.png').addClass('avatar').appendTo(this.div);
       this.shadow = $("<img />").attr('src', '/images/shadows/player.png').addClass('shadow').appendTo(this.div);
       this.velocity = new Vector(0, 0, 0);
       this.position = new Vector(this.get('x'), this.get('y'), this.get('z'));
-      this.radius = new Vector(30, 10, 0);
+      this.radius = new Vector(20, 7, 0);
       this.jumpTimer = 10;
       this.draw();
       this.dead = false;
@@ -55,18 +55,18 @@
     return Player;
   })();
   __extends(Player, Model);
-  Player.prototype.doAction = function(actionName, time, callBack) {
-    return {
-      func: __bind(function() {
-        time--;
-        if (time > 0) {
-          this.notifyAction(actionName);
-          return setTimeout(func, 1000);
-        } else {
-          return callback();
-        }
-      }, this)
-    };
+  Player.prototype.doAction = function(actionName, time, callback) {
+    var func;
+    func = __bind(function() {
+      time--;
+      if (time > 0) {
+        this.notifyAction(actionName);
+        return setTimeout(func, 1000);
+      } else {
+        return callback();
+      }
+    }, this);
+    return func();
   };
   Player.prototype.pickup = function(item) {
     this.notifyAction(item.name);
@@ -219,12 +219,12 @@
         this.velocity.z = 10;
         this.position.z += 1;
         this.avatar.css({
-          height: 150,
-          width: 100,
+          height: 50,
+          width: 66,
           'padding-top': 20
         }).animate({
-          height: 170,
-          width: 100,
+          height: 70,
+          width: 66,
           'padding-top': 0
         });
       }
@@ -244,7 +244,7 @@
     if (this.div.parent().length === 0) {
       this.div.appendTo('#playfield').show();
     }
-    height = 120;
+    height = 70;
     altitude = this.altitude();
     if (latency) {
       this.div.stop().animate({
@@ -262,13 +262,13 @@
     });
     if (latency) {
       this.avatar.stop().animate({
-        top: 0 - altitude - height - 15,
-        left: -50
+        top: 0 - altitude - height + 8,
+        left: -30
       }, latency, 'linear');
     } else {
       this.avatar.css({
-        top: 0 - altitude - height - 15,
-        left: -50
+        top: 0 - altitude - height + 8,
+        left: -30
       });
     }
     return this.shadow.css({

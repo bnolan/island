@@ -16,11 +16,10 @@ class GrassTile extends Tile
     
   onVerbDig: (player) ->
     item = Items.findByName "Compost"
-    
+
     player.doAction "Digging", "5", =>
       @remove()
-      
-      player.pickup(item)
+      # player.pickup(item)
       
   getName: ->
     "Grass"
