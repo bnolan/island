@@ -1,0 +1,39 @@
+<style>
+.grid_5{
+  width: 220px;
+  float: left;
+}
+.grid_6{
+  width: 580px;
+  float: right;
+}
+</style>
+
+
+<div class="grid_5">
+  <h3>Documentation</h3>
+  
+  <ul>
+    <li>
+      Classes
+
+      <ul>
+        <% @pages.each do |p| %>
+          <% if p == @page %>
+            <li><%= p %></li>
+          <% else %>
+            <li><%= link_to p, "/docs/classes/#{p}" %></li>
+          <% end %>
+        <% end %>
+      </ul>
+    </li>
+  </ul>
+  
+  
+</div>
+
+<div class="grid_6 prefix_1">
+  <%= Maruku.new(@markup).to_html.html_safe %>
+</div>
+
+<br style="clear: both" />
