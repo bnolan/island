@@ -6,6 +6,21 @@ class Map
     @maxY = 8
     @maxX = 100
 
+  getWidth: ->
+    @maxX
+    
+  getHeight: ->
+    @maxY
+
+  getGridWidth: ->
+    @gridWidth
+
+  getGridHeight: ->
+    @gridHeight
+
+  getDimensions: ->
+    new Vector(@maxX * @gridWidth, @maxY * @gridHeight)
+    
   autogenerate: ->
     x = 1
     y = 3

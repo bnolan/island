@@ -35,5 +35,6 @@
     return player.inventory.findByName("clippers");
   }, this));
   Verb.dig = new Verb("Dig", "Gathers dirt");
+  Verb.bash = new Verb("Bash", "Bashes with your fists");
   this.Verb = Verb;
 }).call(this);

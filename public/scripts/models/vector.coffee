@@ -4,6 +4,9 @@ class Vector
     @y = y || 0
     @z = z || 0
 
+  copy: ->
+    new Vector @x, @y, @z
+    
   add: (v) ->
     new Vector(@x + v.x, @y + v.y, @z + v.z)
 
@@ -16,5 +19,8 @@ class Vector
   toWire: ->
     for component in [@x, @y, @z]
       Math.floor component
-    
+
+  length: ->
+    Math.sqrt( @x * @x + @y * @y + @z * @z )
+
 this.Vector = Vector

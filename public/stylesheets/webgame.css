@@ -44,6 +44,7 @@ body{
 }
 
 .toolbox{
+  display: none;
   background: white;
   border-right: 3px solid #777;
   -webkit-box-shadow: 2px 0 4px rgba(0,0,0,0.2);
@@ -217,4 +218,15 @@ ul.menubar {
   line-height: 15px;
   color: white;
   text-shadow: 0 0 2px black;
+}
+
+#playfield-container{
+  background: #bef;
+  position: absolute;
+  top: 50px;
+  left: 0;
+  right: 0;
+  bottom: 30px;
+  overflow: hidden;
+  background: #acd; 
 }

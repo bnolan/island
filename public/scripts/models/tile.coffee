@@ -81,6 +81,8 @@ class Tile
   onclick: (e) =>
     # position = @div.offset()
 
+    console.log e.button
+    
     player = app.player
     
     menu = new PopupMenu e

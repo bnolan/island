@@ -9,17 +9,35 @@
   };
   Zombie = (function() {
     function Zombie() {
+      var _this;
+      _this = this;
+      this.onVerbBash = function() { return Zombie.prototype.onVerbBash.apply(_this, arguments); };
       return Creature.apply(this, arguments);
     }
     return Zombie;
   })();
   __extends(Zombie, Creature);
+  Zombie.prototype.getName = function() {
+    return "Level 1 Zombie";
+  };
+  Zombie.prototype.getDescription = function() {
+    return "It looks hungry. I think it wants your brains.";
+  };
+  Zombie.prototype.verbs = function() {
+    return [Verb.bash];
+  };
+  Zombie.prototype.onVerbBash = function(sender) {
+    this.removeHealth(3.5, sender);
+    return console.log('ow!');
+  };
   Zombie.prototype.tick = function(period) {
-    var a, attacks, b, p, player, speed, v;
-    this.radius = new Vector(30, 30, 0);
-    speed = 50;
+    this.radius = new Vector(25, 25, 0);
+    this.attackRadius = 80;
+    speed = 25;
     attacks = 0.2;
+    old = this.getPosition();
     p = this.getPosition();
+    gh = this.getGroundHeight(p);
     a = this.get('attack') || 0;
     b = this.get('brains') || Math.random() * 2 + 2;
     player = Players.findNearestTo(this.getPosition()).first();
@@ -33,12 +51,16 @@
     } else if (player.getPosition().y - player.radius.y - this.radius.x > p.y) {
       p.y += period * speed;
     }
+    if (gh !== this.getGroundHeight(p)) {
+      p = old;
+    }
     v = player.getPosition();
-    if (v.subtract(p).length() < this.radius.x + player.radius.x + 5) {
+    if (v.subtract(p).length() < this.attackRadius) {
       a -= period;
       if (a <= 0) {
         a = 1 / attacks;
         this.notifyAction("OM NOM NOM");
+        player.removeHealth(5);
       }
     } else {
       b -= period;
@@ -52,6 +74,23 @@
       attack: a,
       brains: b
     });
+  };
+  Zombie.spawn = function(map) {
+    var stack, x, y, z;
+    z = new Zombie({
+      health: 10,
+      maxHealth: 10
+    });
+    stack = new Stack;
+    while (stack.isEmpty()) {
+      x = parseInt(Math.random() * 10);
+      y = parseInt(Math.random() * map.getHeight());
+      stack = map.get(x, y);
+    }
+    z.setPosition(new Vector((x + 0.5) * map.getGridWidth(), (y + 0.5) * map.getGridHeight(), 0));
+    z.show();
+    Creatures.add(z);
+    return z;
   };
   this.Zombie = Zombie;
 }).call(this);

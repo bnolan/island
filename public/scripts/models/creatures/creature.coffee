@@ -4,13 +4,96 @@ class Creature extends Model
     
     super
 
+  addHealth: (x, sender) ->
+    h = @get('health')
+    h = Math.min(@health + x, @maxHealth)
+    
+    @set { health : h }
+    
+    @animateHealth()
+
+  removeHealth: (x, sender) ->
+    h = @get('health')
+    h = Math.max(h - x, 0)
+
+    if h == 0
+      @deathBy(sender)
+      
+    @set { health : h }
+
+    @animateHealth()
+
+  animateHealth: ->
+    h = @get('health')
+
+    percentage = 100 / @get('maxHealth') * h
+    @healthBar.find('span').stop().animate { width : "#{percentage}%" }, 1000
+
+    # @healthBar.find('label').text @health
+    
+  deathBy: (sender) ->
+    app.log "You killed a #{@getName()}"
+    
+    @hide()
+    
+  getGroundHeight: (position) ->
+    if not position
+      position = @getPosition()
+    
+    @getStack(position).height(position.x, position.y)
+
+  getStack: (position) ->
+    if not position
+      position = @getPosition()
+
+    x = Math.floor(position.x / 100)
+    y = Math.floor(position.y / 80)
+
+    app? && app.map.get(x,y)
+
+  verbs: ->
+    []
+
+  onMouseOver: ->
+    @healthBar.show()
+
+  onMouseOut: ->
+    @healthBar.hide()
+
+  onclick: (e) =>
+    # position = @div.offset()
+
+    player = app.player
+
+    menu = new PopupMenu e
+
+    menu.setName @getName()
+    menu.setDescription @getDescription()
+
+    for verb in @verbs()
+      func = this[verb.getCallbackName()]
+
+      if player.canPerform verb
+        # Add the menu item to do it
+        menu.addMenuItem verb.getName(), verb.getDescription(), =>
+          func.call(this, player)
+      else
+        menu.addDisabledMenuItem verb.getName(), verb.getRequirements()
+
+    menu.show()
+
+    e.preventDefault()
+    e.stopPropagation()
+
   createElements: ->
     @div = $("<div />").addClass('creature').hide()
     @div.appendTo '#playfield'
 
     @shadow = $("<img />").attr('src', '/images/shadows/player.png').addClass('shadow').appendTo @div
     @icon = $("<img />").attr('src', '/images/creatures/zombie.png').addClass('icon').appendTo @div
-
+    @healthBar = $("<div />").addClass('healthbar').html("<span />").appendTo @div
+    @animateHealth()
+    
     @icon.click @onclick
     
     @redraw()
@@ -62,29 +145,6 @@ class Creature extends Model
       z : p.z
     }
     
-  # todo: refactor into menu class
-  onclick: (e) =>
-    # position = @div.offset()
-    # 
-    # ul = $(".menu").hide().find('ul').empty()
-    # 
-    # $(".menu .description").text @get('description')
-    # $(".menu .name").text @get('name')
-    # 
-    # if @getVerbs
-    #   for verb in @getVerbs()
-    #     func = this["onVerb#{verb.capitalize()}"]
-    # 
-    #     $("<li />").text(verb.capitalize()).appendTo(ul).click (e) =>
-    #       $(".menu").fadeOut()
-    #       e.preventDefault()
-    # 
-    #       func.call(this, app.player)
-    # 
-    # $(".menu").css({ left : e.clientX - 80, top : e.clientY - $(".menu").height() - 40 }).fadeIn()
-    # 
-    # e.preventDefault()
-    # e.stopPropagation()
   
   # Removes the item from the world
   remove: ->
@@ -102,7 +162,7 @@ class Creature extends Model
     altitude = app.map.getHeightByPoint(position)
     
     @div.css {
-      top : position.y
+      top : position.y - 10
       left : position.x
       'z-index' : parseInt(position.y + altitude) + 10
     }
@@ -123,11 +183,14 @@ class Creature extends Model
     }
     
 
-# Creatures = new Backbone.Collection
-# Items.model = Item
+Creatures = new Backbone.Collection
+Creatures.model = Creature
+this.Creatures = Creatures
+
 # Items.findByName = (name) ->
 #   Items.find (item) ->
 #     item.get('name') == name
 #
 # this.Items = Items
+
 this.Creature = Creature

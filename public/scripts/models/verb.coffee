@@ -31,5 +31,6 @@ Verb.mow = new Verb "Mow", "Gathers compost", "Requires clippers", (player) =>
 
 Verb.dig = new Verb "Dig", "Gathers dirt"
 
+Verb.bash = new Verb "Bash", "Bashes with your fists"
 
 this.Verb = Verb

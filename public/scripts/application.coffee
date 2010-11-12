@@ -109,12 +109,17 @@ class Application
     #   axis : 'x'
     # }
     $("#playfield").click @onclick
+
+    $("#playfield").css { top : ($('#playfield-container').height() - @map.getDimensions().y) / 2 }
     
     $(".toolbox .asset").click (e) ->
       $(".toolbox .asset").removeClass('selected')
       $(e.currentTarget).addClass 'selected'
       e.preventDefault()
 
+  log: (message) ->
+    console.log message
+    
   onSocketOpen: (e) =>
     # uri = parseUri(document.location)
     # if ( uri.queryKey.oauth_token ) {
@@ -137,16 +142,22 @@ class Application
     @webSocketService.processMessage(data);
     
   addPlayer: ->
-    @creature = new Zombie { x : 350, y : 360}
-    @creature.show()
+    for i from 1 to 3
+      Zombie.spawn(@map)
+    
+    # @creature = new Zombie { x : 350, y : 360}
+    # @creature.show()
     
     @player = new Player($PLAYER)
     setInterval @tick, 33
     setInterval @networkTick, 200
+    setInterval @creatureTick, 100
 
     for player in $PLAYERS
       if player.id != @player.id
-        @players[player.id] = new Player(player)
+        p = new Player(player)
+        p.hide()
+        @players[player.id] = p
 
     $.keys = {}
     $.keyCodes = {ALT:18,BACKSPACE:8,CAPS_LOCK:20,COMMA:188,COMMAND:91,COMMAND_LEFT:91,COMMAND_RIGHT:93,CONTROL:17,DELETE:46,DOWN:40,END:35,ENTER:13,ESCAPE:27,HOME:36,INSERT:45,LEFT:37,MENU:93,NUMPAD_ADD:107,NUMPAD_DECIMAL:110,NUMPAD_DIVIDE:111,NUMPAD_ENTER:108,NUMPAD_MULTIPLY:106,NUMPAD_SUBTRACT:109,PAGE_DOWN:34,PAGE_UP:33,PERIOD:190,RIGHT:39,SHIFT:16,SPACE:32,TAB:9,UP:38,WINDOWS:91}
@@ -161,9 +172,10 @@ class Application
     @player.draw()
     @player.tick()
     
-    @creature.redraw()
-    @creature.tick( 1 / 33 )
-    
+  creatureTick: ->
+    for creature in Creatures.models
+      creature.redraw()
+      creature.tick( 1 / 10 )
 
   networkTick: =>
     if not @player.dead

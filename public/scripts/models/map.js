@@ -12,6 +12,21 @@
     }
     return Map;
   })();
+  Map.prototype.getWidth = function() {
+    return this.maxX;
+  };
+  Map.prototype.getHeight = function() {
+    return this.maxY;
+  };
+  Map.prototype.getGridWidth = function() {
+    return this.gridWidth;
+  };
+  Map.prototype.getGridHeight = function() {
+    return this.gridHeight;
+  };
+  Map.prototype.getDimensions = function() {
+    return new Vector(this.maxX * this.gridWidth, this.maxY * this.gridHeight);
+  };
   Map.prototype.autogenerate = function() {
     var _result, _result2, _result3, _to, _to2, _to3, _to4, dirt, grass, h, j, stack, w, x, xx, y, yy;
     x = 1;

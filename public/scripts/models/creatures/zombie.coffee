@@ -1,16 +1,35 @@
 class Zombie extends Creature
 
+  getName: ->
+    "Level 1 Zombie"
+    
+  getDescription: ->
+    "It looks hungry. I think it wants your brains."
+
+  verbs: ->
+    [ Verb.bash ]
+
+  onVerbBash: (sender) =>
+    @removeHealth 3.5, sender
+    console.log 'ow!'
+    
+    # ....
+    
   #
   # Period is the number of seconds this update is meant to last for.
   #
   tick: (period) ->
-    @radius = new Vector 30, 30, 0
+    @radius = new Vector 25, 25, 0
+    @attackRadius = 80
     
     # period = 0
-    speed = 50 # cm/s
+    speed = 25 # cm/s
     attacks = 0.2 # a/s
     
+    old = @getPosition()
     p = @getPosition()
+
+    gh = @getGroundHeight(p)
     
     # console.log period
     
@@ -34,18 +53,22 @@ class Zombie extends Creature
     else if player.getPosition().y - player.radius.y - @radius.x > p.y
       p.y += period * speed
 
+    if gh != @getGroundHeight(p)
+      p = old
+      
     # Can we attack the user?
     
     v = player.getPosition()
 
     # Are we in attack range?
-    if v.subtract(p).length() < @radius.x + player.radius.x + 5
+    if v.subtract(p).length() < @attackRadius
       
       a -= period
     
       if a <= 0
         a = 1 / attacks
         @notifyAction "OM NOM NOM"
+        player.removeHealth 5
 
       
     else
@@ -67,6 +90,26 @@ class Zombie extends Creature
       brains : b
     }
     
+
+Zombie.spawn = (map) ->
+  z = new Zombie { health : 10, maxHealth : 10 }
+  
+  stack = new Stack # map.get -1, -1
+  
+  while stack.isEmpty()
+    x = parseInt(Math.random() * 10) # Math.random() * map.getWidth())
+    y = parseInt(Math.random() * map.getHeight())
+    
+    stack = map.get x,y
+    
+  z.setPosition(new Vector((x + 0.5) * map.getGridWidth(), (y + 0.5) * map.getGridHeight(), 0))
+
+  # z.save()
+  z.show()
+
+  Creatures.add z
+  
+  z
     
   
 this.Zombie = Zombie

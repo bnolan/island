@@ -100,6 +100,9 @@
       this.webSocketService = new WebSocketService(this, this.webSocket);
       this.map.autogenerate();
       $("#playfield").click(this.onclick);
+      $("#playfield").css({
+        top: ($('#playfield-container').height() - this.map.getDimensions().y) / 2
+      });
       $(".toolbox .asset").click(function(e) {
         $(".toolbox .asset").removeClass('selected');
         $(e.currentTarget).addClass('selected');
@@ -109,6 +112,9 @@
     }
     return Application;
   })();
+  Application.prototype.log = function(message) {
+    return console.log(message);
+  };
   Application.prototype.onSocketOpen = function(e) {};
   Application.prototype.onSocketClose = function() {
     return this.webSocketService.connectionClosed();
@@ -125,19 +131,20 @@
     return this.webSocketService.processMessage(data);
   };
   Application.prototype.addPlayer = function() {
-    this.creature = new Zombie({
-      x: 350,
-      y: 360
-    });
-    this.creature.show();
+    for (i = 1; i <= 3; i++) {
+      Zombie.spawn(this.map);
+    }
     this.player = new Player($PLAYER);
     setInterval(this.tick, 33);
     setInterval(this.networkTick, 200);
+    setInterval(this.creatureTick, 100);
     _ref = $PLAYERS;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       player = _ref[_i];
       if (player.id !== this.player.id) {
-        this.players[player.id] = new Player(player);
+        p = new Player(player);
+        p.hide();
+        this.players[player.id] = p;
       }
     }
     $.keys = {};
@@ -184,9 +191,17 @@
   };
   Application.prototype.tick = function() {
     this.player.draw();
-    this.player.tick();
-    this.creature.redraw();
-    return this.creature.tick(1 / 33);
+    return this.player.tick();
+  };
+  Application.prototype.creatureTick = function() {
+    _ref = Creatures.models;
+    _result = [];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      creature = _ref[_i];
+      creature.redraw();
+      _result.push(creature.tick(1 / 10));
+    }
+    return _result;
   };
   Application.prototype.networkTick = function() {
     return !this.player.dead ? this.webSocketService.sendUpdate(this.player) : void 0;

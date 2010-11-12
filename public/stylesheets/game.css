@@ -65,16 +65,6 @@ canvas{
   -webkit-transition-duraction: 4s, 4s;
 }
 
-#playfield-container{
-  background: #bef;
-  position: absolute;
-  top: 50px;
-  left: 200px;
-  right: 0;
-  bottom: 30px;
-  overflow: hidden;
-  background: -webkit-gradient(linear, left top, left bottom, from(#acd), to(#bbc));
-}
 #playfield{
   position: absolute;
   left: 0;
@@ -125,6 +115,27 @@ canvas{
 }
 .creature *{
   position: absolute;
+}
+.creature .healthbar{
+  border: 3px solid #0af;
+  width: 40px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  -webkit-border-radius: 10px;
+  background: white;
+  padding: 2px;
+  height: 5px;
+  z-index: 1000;
+  left: -25px;
+  top: -110px;
+}
+.creature .healthbar span{
+  display: block;
+  width: 50%;
+  height: 5px;
+  background: #0af;
+  -webkit-border-radius: 5px;
 }
 
 .creature .action{

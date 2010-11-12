@@ -42,6 +42,9 @@ class Player extends Model
     @healthBar = $("#health")
     @animateHealth()
 
+  hide: ->
+    @div.hide()
+    
   getPosition: ->
     @position
     

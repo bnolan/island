@@ -1,5 +1,5 @@
 (function() {
-  var Creature;
+  var Creature, Creatures;
   var __extends = function(child, parent) {
     function ctor() { this.constructor = child; }
     ctor.prototype = parent.prototype;
@@ -20,11 +20,87 @@
     return Creature;
   })();
   __extends(Creature, Model);
+  Creature.prototype.addHealth = function(x, sender) {
+    h = this.get('health');
+    h = Math.min(this.health + x, this.maxHealth);
+    this.set({
+      health: h
+    });
+    return this.animateHealth();
+  };
+  Creature.prototype.removeHealth = function(x, sender) {
+    h = this.get('health');
+    h = Math.max(h - x, 0);
+    if (h === 0) {
+      this.deathBy(sender);
+    }
+    this.set({
+      health: h
+    });
+    return this.animateHealth();
+  };
+  Creature.prototype.animateHealth = function() {
+    h = this.get('health');
+    percentage = 100 / this.get('maxHealth') * h;
+    return this.healthBar.find('span').stop().animate({
+      width: "" + percentage + "%"
+    }, 1000);
+  };
+  Creature.prototype.deathBy = function(sender) {
+    app.log("You killed a " + (this.getName()));
+    return this.hide();
+  };
+  Creature.prototype.getGroundHeight = function(position) {
+    if (!position) {
+      position = this.getPosition();
+    }
+    return this.getStack(position).height(position.x, position.y);
+  };
+  Creature.prototype.getStack = function(position) {
+    if (!position) {
+      position = this.getPosition();
+    }
+    x = Math.floor(position.x / 100);
+    y = Math.floor(position.y / 80);
+    return (typeof app !== "undefined" && app !== null) && app.map.get(x, y);
+  };
+  Creature.prototype.verbs = function() {
+    return [];
+  };
+  Creature.prototype.onMouseOver = function() {
+    return this.healthBar.show();
+  };
+  Creature.prototype.onMouseOut = function() {
+    return this.healthBar.hide();
+  };
+  Creature.prototype.onclick = function(e) {
+    player = app.player;
+    menu = new PopupMenu(e);
+    menu.setName(this.getName());
+    menu.setDescription(this.getDescription());
+    _ref = this.verbs();
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      verb = _ref[_i];
+      func = this[verb.getCallbackName()];
+      if (player.canPerform(verb)) {
+        menu.addMenuItem(verb.getName(), verb.getDescription(), __bind(function() {
+          return func.call(this, player);
+        }, this));
+      } else {
+        menu.addDisabledMenuItem(verb.getName(), verb.getRequirements());
+      }
+    }
+    menu.show();
+    e.preventDefault();
+    return e.stopPropagation();
+  };
   Creature.prototype.createElements = function() {
     this.div = $("<div />").addClass('creature').hide();
     this.div.appendTo('#playfield');
     this.shadow = $("<img />").attr('src', '/images/shadows/player.png').addClass('shadow').appendTo(this.div);
     this.icon = $("<img />").attr('src', '/images/creatures/zombie.png').addClass('icon').appendTo(this.div);
+    this.healthBar = $("<div />").addClass('healthbar').html("<span />").appendTo(this.div);
+    this.animateHealth();
     this.icon.click(this.onclick);
     this.redraw();
     return this.show();
@@ -63,7 +139,6 @@
       z: p.z
     });
   };
-  Creature.prototype.onclick = function(e) {};
   Creature.prototype.remove = function() {
     this.div.hide().remove();
     return this.div = null;
@@ -77,7 +152,7 @@
     height = 70;
     altitude = app.map.getHeightByPoint(position);
     this.div.css({
-      top: position.y,
+      top: position.y - 10,
       left: position.x,
       'z-index': parseInt(position.y + altitude) + 10
     });
@@ -94,5 +169,8 @@
       left: -width / 2
     });
   };
+  Creatures = new Backbone.Collection;
+  Creatures.model = Creature;
+  this.Creatures = Creatures;
   this.Creature = Creature;
 }).call(this);

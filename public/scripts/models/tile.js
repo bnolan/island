@@ -71,6 +71,7 @@
     return [];
   };
   Tile.prototype.onclick = function(e) {
+    console.log(e.button);
     player = app.player;
     menu = new PopupMenu(e);
     menu.setName(this.getName());

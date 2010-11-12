@@ -55,6 +55,9 @@
     return Player;
   })();
   __extends(Player, Model);
+  Player.prototype.hide = function() {
+    return this.div.hide();
+  };
   Player.prototype.getPosition = function() {
     return this.position;
   };
