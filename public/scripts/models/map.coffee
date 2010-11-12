@@ -1,11 +1,15 @@
 class Map
   constructor: ->
     @stacks = {}
-    @gridWidth = 100
-    @gridHeight = 80
+    @gridDimensions = new Vector 100, 80, 0
+    @gridWidth = @gridDimensions.x
+    @gridHeight = @gridDimensions.y
     @maxY = 8
     @maxX = 100
 
+  getExtents: ->
+    new Vector @maxX, @maxY
+    
   getWidth: ->
     @maxX
     
@@ -98,6 +102,16 @@ class Map
 
     @stacks[index]
 
+  # Does the ellipse defined by position, radius intersect with the map?
+  ellipseIntersection: (position, radius) ->
+    pos1 = position.add(radius)
+    pos2 = position.subtract(radius)
+    
+    height1 = @get(Math.floor(pos1.x / @gridWidth), Math.floor(pos1.y / @gridHeight)).height(pos1.x, pos1.y)
+    height2 = @get(Math.floor(pos2.x / @gridWidth), Math.floor(pos2.y / @gridHeight)).height(pos2.x, pos2.y)
+
+    height1 != height2
+    
   # Returns the highest ground point in the given radius [vector] of the position [vector].
   getHeightByRadius: (position, radius) ->
 

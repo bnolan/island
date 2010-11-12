@@ -12,6 +12,9 @@
   Vector.prototype.copy = function() {
     return new Vector(this.x, this.y, this.z);
   };
+  Vector.prototype.inverse = function() {
+    return new Vector(-this.x, -this.y, -this.z);
+  };
   Vector.prototype.add = function(v) {
     return new Vector(this.x + v.x, this.y + v.y, this.z + v.z);
   };

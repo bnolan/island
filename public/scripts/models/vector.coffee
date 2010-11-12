@@ -7,6 +7,9 @@ class Vector
   copy: ->
     new Vector @x, @y, @z
     
+  inverse: ->
+    new Vector -@x, -@y, -@z
+    
   add: (v) ->
     new Vector(@x + v.x, @y + v.y, @z + v.z)
 

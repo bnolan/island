@@ -4,14 +4,18 @@
   Map = (function() {
     function Map() {
       this.stacks = {};
-      this.gridWidth = 100;
-      this.gridHeight = 80;
+      this.gridDimensions = new Vector(100, 80, 0);
+      this.gridWidth = this.gridDimensions.x;
+      this.gridHeight = this.gridDimensions.y;
       this.maxY = 8;
       this.maxX = 100;
       return this;
     }
     return Map;
   })();
+  Map.prototype.getExtents = function() {
+    return new Vector(this.maxX, this.maxY);
+  };
   Map.prototype.getWidth = function() {
     return this.maxX;
   };
@@ -103,6 +107,14 @@
       this.stacks[index] = new Stack(this, x, y);
     }
     return this.stacks[index];
+  };
+  Map.prototype.ellipseIntersection = function(position, radius) {
+    var height1, height2, pos1, pos2;
+    pos1 = position.add(radius);
+    pos2 = position.subtract(radius);
+    height1 = this.get(Math.floor(pos1.x / this.gridWidth), Math.floor(pos1.y / this.gridHeight)).height(pos1.x, pos1.y);
+    height2 = this.get(Math.floor(pos2.x / this.gridWidth), Math.floor(pos2.y / this.gridHeight)).height(pos2.x, pos2.y);
+    return height1 !== height2;
   };
   Map.prototype.getHeightByRadius = function(position, radius) {
     var height1, height2, pos1, pos2;

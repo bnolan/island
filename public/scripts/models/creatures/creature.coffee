@@ -36,6 +36,10 @@ class Creature extends Model
     
     @hide()
     
+  ellipseGroundIntersection: (position, radius) ->
+    
+    
+    
   getGroundHeight: (position) ->
     if not position
       position = @getPosition()
@@ -93,6 +97,8 @@ class Creature extends Model
     @icon = $("<img />").attr('src', '/images/creatures/zombie.png').addClass('icon').appendTo @div
     @healthBar = $("<div />").addClass('healthbar').html("<span />").appendTo @div
     @animateHealth()
+    
+    @healthBar.hide()
     
     @icon.click @onclick
     

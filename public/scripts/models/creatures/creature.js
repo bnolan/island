@@ -50,6 +50,7 @@
     app.log("You killed a " + (this.getName()));
     return this.hide();
   };
+  Creature.prototype.ellipseGroundIntersection = function(position, radius) {};
   Creature.prototype.getGroundHeight = function(position) {
     if (!position) {
       position = this.getPosition();
@@ -101,6 +102,7 @@
     this.icon = $("<img />").attr('src', '/images/creatures/zombie.png').addClass('icon').appendTo(this.div);
     this.healthBar = $("<div />").addClass('healthbar').html("<span />").appendTo(this.div);
     this.animateHealth();
+    this.healthBar.hide();
     this.icon.click(this.onclick);
     this.redraw();
     return this.show();

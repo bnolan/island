@@ -12,6 +12,8 @@ Island::Application.routes.draw do
   resources :items
   resource :map
   
+  match 'docs/*path' => 'docs#show'
+  
   # Sample of named route:
   #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
   # This route can be invoked with purchase_url(:id => product.id)
