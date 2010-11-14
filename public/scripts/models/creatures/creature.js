@@ -20,6 +20,9 @@
     return Creature;
   })();
   __extends(Creature, Model);
+  Creature.prototype.getHealth = function() {
+    return this.get('health');
+  };
   Creature.prototype.addHealth = function(x, sender) {
     h = this.get('health');
     h = Math.min(this.health + x, this.maxHealth);

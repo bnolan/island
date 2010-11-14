@@ -4,6 +4,9 @@ class Creature extends Model
     
     super
 
+  getHealth: ->
+    @get('health')
+    
   addHealth: (x, sender) ->
     h = @get('health')
     h = Math.min(@health + x, @maxHealth)
