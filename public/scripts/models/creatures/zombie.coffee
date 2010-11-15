@@ -23,13 +23,13 @@ class Zombie extends Creature
     @attackRadius = 80
     
     # period = 0
-    speed = 25 # cm/s
+    speed = 100 # cm/s
     attacks = 0.2 # a/s
     
     old = @getPosition()
     p = @getPosition()
 
-    gh = @getGroundHeight(p)
+    gh = @map.getHeightByRadius(p, @radius) # @getGroundHeight(p)
     
     # console.log period
     
@@ -41,19 +41,27 @@ class Zombie extends Creature
       
     # @redraw()
     
-    player = Players.findNearestTo(@getPosition()).first()
+    # Move zombie and do collision detection...
     
+    player = Players.findNearestTo(@getPosition()).first()
+
     if player.getPosition().x + player.radius.x + @radius.x < p.x
       p.x -= period * speed
     else if player.getPosition().x - player.radius.x - @radius.x > p.x
       p.x += period * speed
+
+    if gh != @map.getHeightByRadius(p, @radius)
+      p = old
 
     if player.getPosition().y + player.radius.y + @radius.y < p.y
       p.y -= period * speed
     else if player.getPosition().y - player.radius.y - @radius.x > p.y
       p.y += period * speed
 
-    if gh != @getGroundHeight(p)
+    if gh != @map.getHeightByRadius(p, @radius)
+      p = old
+
+    if @creatureCollision(p)
       p = old
       
     # Can we attack the user?
@@ -61,7 +69,7 @@ class Zombie extends Creature
     v = player.getPosition()
 
     # Are we in attack range?
-    if v.subtract(p).length() < @attackRadius
+    if (v.subtract(p).length() < @attackRadius) and (v.z == p.z)
       
       a -= period
     
@@ -94,13 +102,13 @@ class Zombie extends Creature
 Zombie.spawn = (map) ->
   z = new Zombie { health : 10, maxHealth : 10 }
   
-  stack = new Stack # map.get -1, -1
+  # stack = new Stack # map.get -1, -1
   
-  while stack.isEmpty()
-    x = parseInt(Math.random() * 10) + 6# Math.random() * map.getWidth())
-    y = parseInt(Math.random() * map.getHeight())
-    
-    stack = map.get x,y
+  # while stack.isEmpty()
+  x = 10 # parseInt(Math.random() * 10) + 6# Math.random() * map.getWidth())
+  y = parseInt(Math.random() * map.getHeight())
+  
+  stack = map.get x,y
     
   z.setPosition(new Vector((x + 0.5) * map.getGridWidth(), (y + 0.5) * map.getGridHeight(), 0))
 

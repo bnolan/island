@@ -12,7 +12,7 @@ class GrassTile extends Tile
     @set { biomass : mass }
 
   verbs: ->
-    [ Verb.mow, Verb.dig ]
+    [ Verb.dig ]
     
   onVerbDig: (player) ->
     item = Items.findByName "Compost"

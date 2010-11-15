@@ -33,11 +33,11 @@
   Zombie.prototype.tick = function(period) {
     this.radius = new Vector(25, 25, 0);
     this.attackRadius = 80;
-    speed = 25;
+    speed = 100;
     attacks = 0.2;
     old = this.getPosition();
     p = this.getPosition();
-    gh = this.getGroundHeight(p);
+    gh = this.map.getHeightByRadius(p, this.radius);
     a = this.get('attack') || 0;
     b = this.get('brains') || Math.random() * 2 + 2;
     player = Players.findNearestTo(this.getPosition()).first();
@@ -46,16 +46,22 @@
     } else if (player.getPosition().x - player.radius.x - this.radius.x > p.x) {
       p.x += period * speed;
     }
+    if (gh !== this.map.getHeightByRadius(p, this.radius)) {
+      p = old;
+    }
     if (player.getPosition().y + player.radius.y + this.radius.y < p.y) {
       p.y -= period * speed;
     } else if (player.getPosition().y - player.radius.y - this.radius.x > p.y) {
       p.y += period * speed;
     }
-    if (gh !== this.getGroundHeight(p)) {
+    if (gh !== this.map.getHeightByRadius(p, this.radius)) {
+      p = old;
+    }
+    if (this.creatureCollision(p)) {
       p = old;
     }
     v = player.getPosition();
-    if (v.subtract(p).length() < this.attackRadius) {
+    if ((v.subtract(p).length() < this.attackRadius) && (v.z === p.z)) {
       a -= period;
       if (a <= 0) {
         a = 1 / attacks;
@@ -81,12 +87,9 @@
       health: 10,
       maxHealth: 10
     });
-    stack = new Stack;
-    while (stack.isEmpty()) {
-      x = parseInt(Math.random() * 10) + 6;
-      y = parseInt(Math.random() * map.getHeight());
-      stack = map.get(x, y);
-    }
+    x = 10;
+    y = parseInt(Math.random() * map.getHeight());
+    stack = map.get(x, y);
     z.setPosition(new Vector((x + 0.5) * map.getGridWidth(), (y + 0.5) * map.getGridHeight(), 0));
     z.show();
     Creatures.add(z);

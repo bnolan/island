@@ -43,6 +43,7 @@
       this.velocity = new Vector(0, 0, 0);
       this.position = new Vector(this.get('x'), this.get('y'), this.get('z'));
       this.radius = new Vector(20, 7, 0);
+      this.map = app.map;
       this.jumpTimer = 10;
       this.draw();
       this.dead = false;
@@ -162,7 +163,7 @@
       this.position = oldPosition;
       this.velocity.x = 0;
     }
-    if (this.position.y >= 800 - this.radius.y) {
+    if (this.position.y >= this.map.getDimensions().y - this.radius.y) {
       this.position = oldPosition;
       this.velocity.y = 0;
     }

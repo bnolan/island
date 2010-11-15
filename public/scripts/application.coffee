@@ -158,9 +158,8 @@ class Application
     @webSocketService.processMessage(data)
 
   addPlayer: ->
-    # for i from 1 to 3
-
-    Zombie.spawn(@map)
+    for i from 1 to 2
+      Zombie.spawn(@map)
     
     # @creature = new Zombie { x : 350, y : 360}
     # @creature.show()

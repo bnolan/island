@@ -37,9 +37,7 @@
     y = 0;
     w = 0;
     h = this.maxY - 1;
-    grass = Assets.find(function(asset) {
-      return asset.get('name').match(/grass/i);
-    });
+    grass = GrassTile;
     dirt = Assets.find(function(asset) {
       return asset.get('name').match(/dirt/i);
     });
@@ -52,7 +50,7 @@
       }
     }
     _result = [];
-    for (j = 1; j <= 20; j++) {
+    for (j = 1; j <= 0; j++) {
       x = Math.floor(Math.random() * this.maxX) + 4;
       y = Math.floor(Math.random() * this.maxY - 1) + 1;
       w = Math.floor(Math.random() * 4);

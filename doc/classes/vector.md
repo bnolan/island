@@ -45,3 +45,6 @@ Returns a new vector that is the subtraction of itself and the argument vector.
 
 Returns a new vector that is the inverse of this vector.
 
+### distance(Vector) -> Float
+
+Returns the length to the other vector

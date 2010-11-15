@@ -29,6 +29,7 @@ class Player extends Model
     @velocity = new Vector(0,0,0)
     @position = new Vector(@get('x'), @get('y'), @get('z'))
     @radius = new Vector(20, 7, 0)
+    @map = app.map
 
     # Pause between subsequent jumps
     @jumpTimer = 10
@@ -146,7 +147,7 @@ class Player extends Model
       @position = oldPosition
       @velocity.x = 0
 
-    if @position.y >= 800 - @radius.y
+    if @position.y >= @map.getDimensions().y - @radius.y
       @position = oldPosition
       @velocity.y = 0
     

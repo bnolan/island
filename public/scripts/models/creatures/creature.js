@@ -14,6 +14,7 @@
       var _this;
       _this = this;
       this.onclick = function() { return Creature.prototype.onclick.apply(_this, arguments); };
+      this.map = app.map;
       Creature.__super__.constructor.apply(this, arguments);
       return this;
     }
@@ -53,10 +54,23 @@
     app.log("You killed a " + (this.getName()));
     return this.hide();
   };
-  Creature.prototype.ellipseGroundIntersection = function(position, radius) {};
+  Creature.prototype.collidesWith = function(position) {
+    return this.getPosition().distanceTo(position) < 100;
+  };
+  Creature.prototype.nearbyCreatures = function() {
+    id = this.cid;
+    return _(Creatures.select(__bind(function(creature) {
+      return creature.cid !== id;
+    }, this)));
+  };
+  Creature.prototype.creatureCollision = function(position) {
+    return this.nearbyCreatures().find(__bind(function(creature) {
+      return creature.getPosition().distanceTo(position) < this.radius.length();
+    }, this));
+  };
   Creature.prototype.getGroundHeight = function(position) {
     if (!position) {
-      position = this.getPosition();
+      position = new Vector(this.get('x'), this.get('y'), 0);
     }
     return this.getStack(position).height(position.x, position.y);
   };
@@ -135,7 +149,7 @@
     return this.onHide ? this.onHide() : void 0;
   };
   Creature.prototype.getPosition = function() {
-    return new Vector(this.get('x'), this.get('y'), 0);
+    return new Vector(this.get('x'), this.get('y'), this.getGroundHeight());
   };
   Creature.prototype.setPosition = function(p) {
     return this.set({

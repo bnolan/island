@@ -13,6 +13,9 @@ class Vector
   add: (v) ->
     new Vector(@x + v.x, @y + v.y, @z + v.z)
 
+  distanceTo: (v) ->
+    @subtract(v).length()
+    
   subtract: (v) ->
     new Vector(@x - v.x, @y - v.y, @z - v.z)
 

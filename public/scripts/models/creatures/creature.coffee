@@ -1,6 +1,6 @@
 class Creature extends Model
   constructor: () ->
-    # @map = map
+    @map = app.map
     
     super
 
@@ -36,16 +36,28 @@ class Creature extends Model
     
   deathBy: (sender) ->
     app.log "You killed a #{@getName()}"
-    
     @hide()
+
+  collidesWith: (position) ->
+    @getPosition().distanceTo(position) < 100 # radius.length() + @radius.length()
+
+  nearbyCreatures: ->
+    id = @cid
     
-  ellipseGroundIntersection: (position, radius) ->
-    
+    _ Creatures.select (creature) =>
+      creature.cid != id
+
+  creatureCollision: (position) ->
+    @nearbyCreatures().find (creature) =>
+      (creature.getPosition().distanceTo(position) < @radius.length())
+  
+  # ellipseGroundIntersection: (position, radius) ->
+  #   false
     
     
   getGroundHeight: (position) ->
     if not position
-      position = @getPosition()
+      position = new Vector @get('x'), @get('y'), 0
     
     @getStack(position).height(position.x, position.y)
 
@@ -145,7 +157,7 @@ class Creature extends Model
       @onHide()
       
   getPosition: ->
-    new Vector(@get('x'), @get('y'), 0)
+    new Vector(@get('x'), @get('y'), @getGroundHeight())
     
   setPosition: (p) ->
     @set {

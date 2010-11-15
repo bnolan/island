@@ -149,7 +149,9 @@
     return this.webSocketService.processMessage(data);
   };
   Application.prototype.addPlayer = function() {
-    Zombie.spawn(this.map);
+    for (i = 1; i <= 2; i++) {
+      Zombie.spawn(this.map);
+    }
     this.player = new Player($PLAYER);
     setInterval(this.tick, 33);
     setInterval(this.networkTick, 200);

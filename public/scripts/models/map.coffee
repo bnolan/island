@@ -34,8 +34,7 @@ class Map
     # stone = Assets.find (asset) ->
     #   asset.get('name').match /stone/i
 
-    grass = Assets.find (asset) ->
-      asset.get('name').match /grass/i
+    grass = GrassTile
 
     dirt = Assets.find (asset) ->
       asset.get('name').match /dirt/i
@@ -47,7 +46,7 @@ class Map
         if not stack.isFull()
           stack.newTile grass
 
-    for j from 1 to 20
+    for j from 1 to 0
       x = Math.floor(Math.random() * @maxX) + 4
       y = Math.floor(Math.random() * @maxY - 1) + 1
       

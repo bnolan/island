@@ -3,7 +3,12 @@
 == Todos
 
   * Reduce y momentum when jumping
+  * Make zombies not stack up on each other (inter creature radius)
+  * Move collision / logic code from zombie into creature
+  * Make item physics, so you can throw or push an item
 
 == Done
 
   * Make the screen scroll slower
+  * Gives zombies collision radius
+  

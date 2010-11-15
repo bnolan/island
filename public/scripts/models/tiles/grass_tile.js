@@ -31,7 +31,7 @@
     });
   };
   GrassTile.prototype.verbs = function() {
-    return [Verb.mow, Verb.dig];
+    return [Verb.dig];
   };
   GrassTile.prototype.onVerbDig = function(player) {
     var item;

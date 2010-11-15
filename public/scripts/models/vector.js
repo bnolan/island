@@ -18,6 +18,9 @@
   Vector.prototype.add = function(v) {
     return new Vector(this.x + v.x, this.y + v.y, this.z + v.z);
   };
+  Vector.prototype.distanceTo = function(v) {
+    return this.subtract(v).length();
+  };
   Vector.prototype.subtract = function(v) {
     return new Vector(this.x - v.x, this.y - v.y, this.z - v.z);
   };
