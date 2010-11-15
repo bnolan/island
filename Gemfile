@@ -5,7 +5,9 @@ gem 'rails', '3.0.0'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
-gem 'sqlite3-ruby', :require => 'sqlite3'
+# gem 'sqlite3-ruby', :require => 'sqlite3'
+
+gem 'pg'
 
 # Use unicorn as the web server
 # gem 'unicorn'
@@ -33,6 +35,8 @@ gem "maruku"
 gem "jammit"
 gem "json"
 gem "devise"
+gem 'warden_oauth'
+gem 'oauth2'
 # gem "mongo_mapper"
 # gem "bson_ext"
 gem 'paperclip', :git => 'git://github.com/thoughtbot/paperclip.git' # , :branch => 'rails3'

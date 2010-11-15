@@ -7,27 +7,37 @@ class Tile
     @gridHeight = 80
 
     @div = $("<div />").addClass 'tile'
-    @img = $("<img />").attr('src', @asset.getImageUrl()).appendTo @div
+
+    if @asset
+      @img = $("<img />").attr('src', @asset.getImageUrl()).appendTo @div
+      @div.click @onclick
+    else
+      @div.css { height : 170, width : 100 }
     
-    @div.click @onclick
-    
-  draw: ->
+  _draw: ->
     x = @stack.x
     y = @stack.y
     
     height = @stack.stackingHeight()
     
+    divheight = @div.height()
+    # if divheight == 0
+    divheight = 0
+      
     @div.css { 
       position : 'absolute'
       left : x * @gridWidth
-      top : y * @gridHeight - @div.height() - 5 - height
+      top : y * @gridHeight - divheight - 10 - height
       'z-index' : y * @gridHeight + height
     }
     
-    $("<label>#{x},#{y},#{height}</label>").appendTo @div
+    # $("<label>#{x},#{y},#{height}</label>").appendTo @div
 
     if @div.parent().length==0
       @div.appendTo '#playfield'
+
+  draw: ->
+    @_draw()
 
     # Shadow pass ;)
 
@@ -41,6 +51,8 @@ class Tile
     @div.remove()
     
   redrawShadows: ->
+    @_draw()
+
     @div.find('.shadow').remove()
 
     if @drawShadow()
@@ -61,7 +73,9 @@ class Tile
     
   # x and y are in local coordinate space between 0 and 1
   getHeight: (x,y) ->
-    if @isRamp()
+    if not @asset
+      0
+    else if @isRamp()
       (@asset.get('height_east') - @asset.get('height_west')) * x + @asset.get('height_west')
     else
       40
@@ -110,16 +124,28 @@ class Tile
     @remove()
     
   isRamp: ->
-    @asset.get('name').match /ramp/i
+    if @asset
+      @asset.get('name').match /ramp/i
+    else
+      false
 
   isDeadly: ->
-    @isLava() or @isWater()
+    if @asset
+      @isLava() or @isWater()
+    else
+      false
     
   isLava: ->
-    @asset.get('name').match /lava/i
+    if @asset
+      @asset.get('name').match /lava/i
+    else
+      false
     
   isWater: ->
-    @asset.get('name').match /water/i
+    if @asset
+      @asset.get('name').match /water/i
+    else
+      false
 
   drawShadow: ->
     if @isRamp()

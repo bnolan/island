@@ -97,7 +97,7 @@ Zombie.spawn = (map) ->
   stack = new Stack # map.get -1, -1
   
   while stack.isEmpty()
-    x = parseInt(Math.random() * 10) # Math.random() * map.getWidth())
+    x = parseInt(Math.random() * 10) + 6# Math.random() * map.getWidth())
     y = parseInt(Math.random() * map.getHeight())
     
     stack = map.get x,y

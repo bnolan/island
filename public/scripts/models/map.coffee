@@ -4,7 +4,7 @@ class Map
     @gridDimensions = new Vector 100, 80, 0
     @gridWidth = @gridDimensions.x
     @gridHeight = @gridDimensions.y
-    @maxY = 8
+    @maxY = 5
     @maxX = 100
 
   getExtents: ->
@@ -26,11 +26,14 @@ class Map
     new Vector(@maxX * @gridWidth, @maxY * @gridHeight)
     
   autogenerate: ->
-    x = 1
-    y = 3
-    w = 2
-    h = 2
+    x = 4
+    y = 0
+    w = 0
+    h = @maxY - 1
     
+    # stone = Assets.find (asset) ->
+    #   asset.get('name').match /stone/i
+
     grass = Assets.find (asset) ->
       asset.get('name').match /grass/i
 
@@ -42,10 +45,10 @@ class Map
         stack = @get(xx,yy)
         
         if not stack.isFull()
-          stack.newTile Assets.first()
+          stack.newTile grass
 
-    for j from 1 to 100
-      x = Math.floor(Math.random() * @maxX)
+    for j from 1 to 10
+      x = Math.floor(Math.random() * @maxX) + 4
       y = Math.floor(Math.random() * @maxY - 1) + 1
       
       w = Math.floor(Math.random() * 4)
@@ -72,7 +75,7 @@ class Map
     rock = Items.find (item) ->
       item.get('name').match /rock/i
 
-    for j from 1 to 100
+    for j from 1 to 50
       stack = @get(-1, -1)
 
       # Find a non-empty tile

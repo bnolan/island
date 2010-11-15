@@ -1,22 +1,23 @@
 (function() {
   var Asset, Assets;
-  var __extends = function(child, parent) {
+  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
     function ctor() { this.constructor = child; }
     ctor.prototype = parent.prototype;
     child.prototype = new ctor;
-    if (typeof parent.extended === "function") parent.extended(child);
+    for (var key in parent) if (__hasProp.call(parent, key)) child[key] = parent[key];
     child.__super__ = parent.prototype;
+    return child;
   };
-  Asset = (function() {
+  Asset = function() {
     function Asset() {
-      return Model.apply(this, arguments);
+      Asset.__super__.constructor.apply(this, arguments);
     }
+    __extends(Asset, Model);
+    Asset.prototype.getImageUrl = function() {
+      return this.get('upload_url');
+    };
     return Asset;
-  })();
-  __extends(Asset, Model);
-  Asset.prototype.getImageUrl = function() {
-    return this.get('upload_url');
-  };
+  }();
   Assets = new Backbone.Collection;
   Assets.model = Asset;
   this.Asset = Asset;

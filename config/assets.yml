@@ -42,3 +42,6 @@ stylesheets:
   game:
     - public/stylesheets/game.css
     - public/stylesheets/webgame.css
+  facebook:
+    - public/stylesheets/game.css
+    - public/stylesheets/facebook.css

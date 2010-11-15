@@ -1,4 +1,4 @@
-GroundHeight = -1000 # 1km up
+GroundHeight = 0 # can walk on the ground... # 1km up
 
 class Stack
   constructor: (map, x,y) ->
@@ -6,6 +6,8 @@ class Stack
     @tiles = []
     @x = x
     @y = y
+    @emptyTile = new EmptyTile(this)
+    # @emptyTile.draw()
     
   set: (params) ->
     @tiles = []
@@ -37,6 +39,7 @@ class Stack
     
   redrawShadows: ->
     if @isEmpty()
+      @emptyTile.redrawShadows()
       # ...
     else
       @getTop().redrawShadows()
@@ -51,7 +54,7 @@ class Stack
   pop: ->
     @tiles.pop()
 
-    for stack in getNeighbours()
+    for stack in @getNeighbours()
       stack.redrawShadows()
 
     @redrawShadows()
@@ -100,14 +103,14 @@ class Stack
 
   getNeighbours: ->
     _.compact [
-      @getNeighbour(@x - 1, y - 1),
-      @getNeighbour(@x, y - 1),
-      @getNeighbour(@x + 1, y - 1),
-      @getNeighbour(@x + 1, y),
-      @getNeighbour(@x + 1, y + 1),
-      @getNeighbour(@x, y + 1),
-      @getNeighbour(@x - 1, y + 1),
-      @getNeighbour(@x - 1, y)
+      @getNeighbour(@x - 1, @y - 1),
+      @getNeighbour(@x, @y - 1),
+      @getNeighbour(@x + 1, @y - 1),
+      @getNeighbour(@x + 1, @y),
+      @getNeighbour(@x + 1, @y + 1),
+      @getNeighbour(@x, @y + 1),
+      @getNeighbour(@x - 1, @y + 1),
+      @getNeighbour(@x - 1, @y)
     ]
     
   isEmpty: ->
@@ -115,7 +118,7 @@ class Stack
     
   # Maximum stack height of 4
   isFull: ->
-    @tiles.length >= 4
+    @tiles.length >= 3
 
   getCenter: ->
     new Vector(

@@ -68,11 +68,28 @@ class WebSocketService
 
     @socket.send(JSON.stringify(obj))
 
+class FocusGrabber
+  constructor: ->
+    @input = $("<input type='text' />").css {
+      opacity : 0.01
+      position : 'absolute'
+      left: -100
+      top: -100
+    }
+    
+    @input.appendTo 'body'
+    
+    setTimeout( =>
+      @input.focus()
+    , 100)
+    
 class Application
   constructor: ->
     @gridWidth = 100
     @gridHeight = 80
 
+    new FocusGrabber
+    
     if $ASSETS?
       Assets.refresh $ASSETS
     
@@ -88,9 +105,9 @@ class Application
     
     @players = {}
     
-    @draw()
-    
     @map = new Map
+
+    @draw()
 
     @webSocket = new WebSocket("ws://localhost:8180")
     @webSocket.onopen = @onSocketOpen
@@ -139,11 +156,12 @@ class Application
       console.log e.data
       return
 
-    @webSocketService.processMessage(data);
-    
+    @webSocketService.processMessage(data)
+
   addPlayer: ->
-    for i from 1 to 3
-      Zombie.spawn(@map)
+    # for i from 1 to 3
+
+    Zombie.spawn(@map)
     
     # @creature = new Zombie { x : 350, y : 360}
     # @creature.show()
@@ -164,6 +182,10 @@ class Application
     
     $(document).keydown (e) =>
       $.keys[e.keyCode] = true
+      
+      if (e.keyCode == $.keyCodes.LEFT) or (e.keyCode == $.keyCodes.RIGHT) or (e.keyCode == $.keyCodes.UP) or (e.keyCode == $.keyCodes.DOWN) or (e.keyCode == $.keyCodes.SPACE)
+        e.preventDefault()
+        
 
     $(document).keyup (e) =>
       $.keys[e.keyCode] = false
@@ -204,7 +226,7 @@ class Application
     
   draw: ->
     w = @canvasWidth
-    h = @canvasHeight
+    h = @map.getDimensions().y
     
     @ctx.beginPath()
 

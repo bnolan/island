@@ -1,0 +1,159 @@
+html, body{
+  overflow: hidden;
+  background: white;
+  margin: 0;
+  padding: 0;
+  height: 540px;
+}
+
+body{
+  width: 754px;
+  height: 538px;
+}
+
+body{
+  font-family: 'arial rounded mt bold';
+  font-size: 0.8em;
+}
+
+#header{
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  border-bottom: 3px solid #777;
+  z-index: 2000;
+  background: #eaeaea;
+  display: none;
+}
+
+#footer{
+  position: absolute;
+  height: 30px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #eaeaea;
+  text-align: center;
+  line-height: 30px;
+  text-shadow: 0 -1px 1px white;
+  color: #777;
+  z-index: 2000;
+  font-family: arial;
+  font-size: 12px;
+}
+
+#footer a{
+  color: inherit;
+}
+
+/* menubar*/
+
+ul.menubar {
+  background: #bbb;
+  height: 25px;
+  margin: 25px 0 0 200px;
+  padding: 0;
+  -webkit-border-top-left-radius: 12px;
+}
+.menubar>li{
+  list-style: none;
+  float: left;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+.menubar>li>a{
+  display: block;
+  line-height: 25px;
+  color: white;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.6);
+  padding: 0 20px;
+}
+
+.menubar>li>a:hover{
+  background: #777;
+}
+
+.menubar>li>ul{
+  display: none;
+}
+
+.menubar>li:hover>ul{
+  display: block;
+  position: absolute;
+  z-index: 4000;
+  background: white;
+  margin: 0;
+  padding: 0;
+  border: 3px solid black;
+  border-top: none;
+  -webkit-border-bottom-left-radius: 10px;
+  -webkit-border-bottom-right-radius: 10px;
+}
+
+.menubar>li>ul>li{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.menubar>li>ul>li>a{
+  white-space: nowrap;
+  display: block;
+  line-height: 25px;
+  color: #333;
+/*  text-shadow: 0 1px 1px rgba(0,0,0,0.6);*/
+  padding: 0 20px;
+  margin: 5px;
+  border: 1px solid transparent;
+}
+
+.menubar>li>ul>li>a:hover{
+  background: rgba(255,0,90,0.5);
+  color: white;
+  border: 1px solid #f07;
+  -webkit-border-radius: 3px;
+}
+
+#health{
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: white;
+  border: 3px solid #f07;
+  -webkit-border-radius: 15px;
+  -webkit-box-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+  height: 15px;
+  width: 80px;
+  padding: 3px;
+}
+#health span{
+  display: block;
+  background: #f07;
+  -webkit-border-radius: 10px;
+  height: 15px;
+}
+#health label{
+  position: absolute;
+  left: 33px;
+  width: 20px;
+  text-align: center;
+  display: block;
+  top: 3px;
+  line-height: 15px;
+  color: white;
+  text-shadow: 0 0 2px black;
+}
+
+#playfield-container{
+  position: absolute;
+  top: 50px;
+  left: 0;
+  right: 0;
+  bottom: 30px;
+  overflow: hidden;
+  background: #c3d3c3;
+  border: 1px solid #aaa;
+}

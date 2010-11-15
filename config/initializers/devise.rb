@@ -139,4 +139,19 @@ Devise.setup do |config|
   #   end
   #   manager.default_strategies(:scope => :user).unshift :twitter_oauth
   # end
+
+  config.warden do |manager|
+    manager.oauth(:facebook) do |facebook|
+      facebook.consumer_secret = "f3b484a9af52dbf401ab8ffeec1a804f"
+      facebook.consumer_key  = "175384795810926"
+      facebook.options :site => 'http://graph.facebook.com'
+    end
+    manager.default_strategies(:scope => :user).unshift :facebook_oauth
+  end
+  
+  # config.oauth :facebook, '175384795810926', 'f3b484a9af52dbf401ab8ffeec1a804f', 
+  #   :site => 'https://graph.facebook.com/',
+  #   :authorize_path => '/oauth/authorize',
+  #   :access_token_path => '/oauth/access_token',
+  #   :scope => %w(email)  
 end
