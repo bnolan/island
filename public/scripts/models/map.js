@@ -7,8 +7,8 @@
       this.gridDimensions = new Vector(100, 80, 0);
       this.gridWidth = this.gridDimensions.x;
       this.gridHeight = this.gridDimensions.y;
-      this.maxY = 5;
-      this.maxX = 100;
+      this.maxY = 4;
+      this.maxX = 50;
     }
     Map.prototype.getExtents = function() {
       return new Vector(this.maxX, this.maxY);
@@ -49,7 +49,7 @@
         }
       }
       _results = [];
-      for (j = 1; j <= 10; j++) {
+      for (j = 1; j <= 20; j++) {
         x = Math.floor(Math.random() * this.maxX) + 4;
         y = Math.floor(Math.random() * this.maxY - 1) + 1;
         w = Math.floor(Math.random() * 4);
@@ -99,6 +99,9 @@
     };
     Map.prototype.get = function(x, y) {
       var index;
+      if ((y < 0) || (y >= this.maxY)) {
+        return null;
+      }
       index = "" + x + "," + y;
       if (!this.stacks[index]) {
         this.stacks[index] = new Stack(this, x, y);

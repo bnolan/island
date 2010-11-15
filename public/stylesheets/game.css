@@ -1,6 +1,5 @@
 .game-container{
-  border: 1px solid #aaa;
-  background: #d3d3d3;
+  background: white;
   overflow: hidden;
   position: relative;
 }
@@ -14,6 +13,7 @@ input[multiple]{
 
 canvas{
   opacity: 0.8;
+  background: #f3f3f3;
 }
 
 .player{

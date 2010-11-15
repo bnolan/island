@@ -85,6 +85,9 @@ class FocusGrabber
     
 class Application
   constructor: ->
+    @players = {}
+    @map = new Map
+
     @gridWidth = 100
     @gridHeight = 80
 
@@ -97,15 +100,12 @@ class Application
       Items.refresh $ITEMS
 
     @canvasWidth = $(document).width()
-    @canvasHeight = $(document).height()
+    @canvasHeight = @map.getDimensions().y
     
     @el = $("<canvas />").attr('width', @canvasWidth).attr('height', @canvasHeight).appendTo '#playfield'
     
     @ctx = @el[0].getContext '2d'
     
-    @players = {}
-    
-    @map = new Map
 
     @draw()
 

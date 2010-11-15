@@ -56,13 +56,13 @@
       this._draw();
       this.div.find('.shadow').remove();
       if (this.drawShadow()) {
-        if (this.stack.westernNeighbour().stackingHeight() > this.stack.stackingHeight()) {
+        if (this.stack.westernNeighbour() && (this.stack.westernNeighbour().stackingHeight() > this.stack.stackingHeight())) {
           $("<img />").addClass('shadow').attr('src', '/images/shadows/west.png').appendTo(this.div);
         }
-        if (this.stack.easternNeighbour().stackingHeight() > this.stack.stackingHeight()) {
+        if (this.stack.easternNeighbour() && (this.stack.easternNeighbour().stackingHeight() > this.stack.stackingHeight())) {
           $("<img />").addClass('shadow').attr('src', '/images/shadows/east.png').appendTo(this.div);
         }
-        if (this.stack.northernNeighbour().stackingHeight() > this.stack.stackingHeight()) {
+        if (this.stack.northernNeighbour() && (this.stack.northernNeighbour().stackingHeight() > this.stack.stackingHeight())) {
           return $("<img />").addClass('shadow').attr('src', '/images/shadows/north.png').appendTo(this.div);
         }
       }

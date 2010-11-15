@@ -90,6 +90,8 @@
       this.onSocketMessage = __bind(this.onSocketMessage, this);;
       this.onSocketClose = __bind(this.onSocketClose, this);;
       this.onSocketOpen = __bind(this.onSocketOpen, this);;
+      this.players = {};
+      this.map = new Map;
       this.gridWidth = 100;
       this.gridHeight = 80;
       new FocusGrabber;
@@ -100,11 +102,9 @@
         Items.refresh($ITEMS);
       }
       this.canvasWidth = $(document).width();
-      this.canvasHeight = $(document).height();
+      this.canvasHeight = this.map.getDimensions().y;
       this.el = $("<canvas />").attr('width', this.canvasWidth).attr('height', this.canvasHeight).appendTo('#playfield');
       this.ctx = this.el[0].getContext('2d');
-      this.players = {};
-      this.map = new Map;
       this.draw();
       this.webSocket = new WebSocket("ws://localhost:8180");
       this.webSocket.onopen = this.onSocketOpen;

@@ -26,12 +26,12 @@
 <p class="notice"><%= notice %></p>
 <p class="alert"><%= alert %></p>
 
-<div class="toolbox">
+<!--div class="toolbox">
   <div class="selector">
     <select><option>All Assets</option><option>Tiles</option><option>Items</option></select>
   </div>
   
-  <% Asset.all.each do |asset| %>
+  <% [].each do |asset| %>
     <div class="asset" data-id="<%= asset.id %>">
       <h3><%= asset.name %></h3>
       <% if asset.image? %>
@@ -40,7 +40,7 @@
       <p class="description">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
     </div>
   <% end %>
-</div>
+</div-->
 
 <div class="menu">
   <div class="chevron">&diams;</div>

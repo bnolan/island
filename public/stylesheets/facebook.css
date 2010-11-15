@@ -22,7 +22,6 @@ body{
   left: 0;
   right: 0;
   height: 50px;
-  border-bottom: 3px solid #777;
   z-index: 2000;
   background: #eaeaea;
   display: none;
@@ -154,6 +153,4 @@ ul.menubar {
   right: 0;
   bottom: 30px;
   overflow: hidden;
-  background: #c3d3c3;
-  border: 1px solid #aaa;
 }

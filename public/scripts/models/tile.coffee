@@ -56,16 +56,16 @@ class Tile
     @div.find('.shadow').remove()
 
     if @drawShadow()
-      if (@stack.westernNeighbour().stackingHeight() > @stack.stackingHeight())
+      if @stack.westernNeighbour() and (@stack.westernNeighbour().stackingHeight() > @stack.stackingHeight())
         $("<img />").addClass('shadow').attr('src', '/images/shadows/west.png').appendTo @div
 
-      if (@stack.easternNeighbour().stackingHeight() > @stack.stackingHeight())
+      if @stack.easternNeighbour() and (@stack.easternNeighbour().stackingHeight() > @stack.stackingHeight())
         $("<img />").addClass('shadow').attr('src', '/images/shadows/east.png').appendTo @div
 
       # if @stack.northernNeighbour() and (@stack.northernNeighbour().stackingHeight() < @stack.stackingHeight())
       #   $("<img />").addClass('shadow').attr('src', '/images/shadows/south.png').css({ top : -40 }).appendTo @div
 
-      if (@stack.northernNeighbour().stackingHeight() > @stack.stackingHeight())
+      if @stack.northernNeighbour() and (@stack.northernNeighbour().stackingHeight() > @stack.stackingHeight())
         $("<img />").addClass('shadow').attr('src', '/images/shadows/north.png').appendTo @div
 
       # if @stack.northWesternNeighbour() and (@stack.northWesternNeighbour().stackingHeight() > @stack.stackingHeight())

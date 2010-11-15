@@ -4,8 +4,8 @@ class Map
     @gridDimensions = new Vector 100, 80, 0
     @gridWidth = @gridDimensions.x
     @gridHeight = @gridDimensions.y
-    @maxY = 5
-    @maxX = 100
+    @maxY = 4
+    @maxX = 50
 
   getExtents: ->
     new Vector @maxX, @maxY
@@ -47,7 +47,7 @@ class Map
         if not stack.isFull()
           stack.newTile grass
 
-    for j from 1 to 10
+    for j from 1 to 20
       x = Math.floor(Math.random() * @maxX) + 4
       y = Math.floor(Math.random() * @maxY - 1) + 1
       
@@ -98,6 +98,10 @@ class Map
       item.show()
     
   get: (x,y) ->
+    
+    if (y < 0) or (y >= @maxY)
+      return null
+      
     index = "#{x},#{y}"
 
     if not @stacks[index]
