@@ -1,5 +1,7 @@
 (function() {
-  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var __bind = function(func, context) {
+    return function() { return func.apply(context, arguments); };
+  };
   $(document).ready(__bind(function() {
     var editor, item, params, playfield, textarea, x, y;
     textarea = $("textarea[name*=code]")[0];
@@ -16,7 +18,7 @@
         }, this)
       });
     }
-    if (typeof $ITEM != "undefined" && $ITEM !== null) {
+    if (typeof $ITEM !== "undefined" && $ITEM !== null) {
       if ($("#item-viewer")) {
         playfield = new Playfield('#item-viewer');
         for (x = 0; x <= 3; x++) {

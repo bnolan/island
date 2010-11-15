@@ -76,13 +76,14 @@ class Map
       item.get('name').match /rock/i
 
     for j from 1 to 50
-      stack = @get(-1, -1)
+      # stack = @get(-1, -1)
 
       # Find a non-empty tile
-      while stack.isEmpty()
-        x = Math.floor(Math.random() * @maxX)
-        y = Math.floor(Math.random() * @maxY - 1) + 1
-        stack = @get(x, y)
+      # while stack.isEmpty()
+
+      x = Math.floor(Math.random() * @maxX)
+      y = Math.floor(Math.random() * @maxY - 1) + 1
+      stack = @get(x, y)
 
       position = stack.getCenter()
       

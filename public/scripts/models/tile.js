@@ -1,9 +1,13 @@
 (function() {
   var Tile;
-  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-  Tile = function() {
+  var __bind = function(func, context) {
+    return function() { return func.apply(context, arguments); };
+  };
+  Tile = (function() {
     function Tile(stack, asset) {
-      this.onclick = __bind(this.onclick, this);;
+      var _this;
+      _this = this;
+      this.onclick = function() { return Tile.prototype.onclick.apply(_this, arguments); };
       this.stack = stack;
       this.asset = asset;
       this.gridWidth = 100;
@@ -18,143 +22,124 @@
           width: 100
         });
       }
+      return this;
     }
-    Tile.prototype._draw = function() {
-      var divheight, height, x, y;
-      x = this.stack.x;
-      y = this.stack.y;
-      height = this.stack.stackingHeight();
-      divheight = this.div.height();
-      divheight = 0;
-      this.div.css({
-        position: 'absolute',
-        left: x * this.gridWidth,
-        top: y * this.gridHeight - divheight - 10 - height,
-        'z-index': y * this.gridHeight + height
-      });
-      if (this.div.parent().length === 0) {
-        return this.div.appendTo('#playfield');
-      }
-    };
-    Tile.prototype.draw = function() {
-      var stack, _i, _len, _ref, _results;
-      this._draw();
-      this.redrawShadows();
-      _ref = this.stack.getNeighbours();
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        stack = _ref[_i];
-        _results.push(stack.redrawShadows());
-      }
-      return _results;
-    };
-    Tile.prototype.remove = function() {
-      this.stack.pop();
-      return this.div.remove();
-    };
-    Tile.prototype.redrawShadows = function() {
-      this._draw();
-      this.div.find('.shadow').remove();
-      if (this.drawShadow()) {
-        if (this.stack.westernNeighbour() && (this.stack.westernNeighbour().stackingHeight() > this.stack.stackingHeight())) {
-          $("<img />").addClass('shadow').attr('src', '/images/shadows/west.png').appendTo(this.div);
-        }
-        if (this.stack.easternNeighbour() && (this.stack.easternNeighbour().stackingHeight() > this.stack.stackingHeight())) {
-          $("<img />").addClass('shadow').attr('src', '/images/shadows/east.png').appendTo(this.div);
-        }
-        if (this.stack.northernNeighbour() && (this.stack.northernNeighbour().stackingHeight() > this.stack.stackingHeight())) {
-          return $("<img />").addClass('shadow').attr('src', '/images/shadows/north.png').appendTo(this.div);
-        }
-      }
-    };
-    Tile.prototype.getHeight = function(x, y) {
-      if (!this.asset) {
-        return 0;
-      } else if (this.isRamp()) {
-        return (this.asset.get('height_east') - this.asset.get('height_west')) * x + this.asset.get('height_west');
-      } else {
-        return 40;
-      }
-    };
-    Tile.prototype.getName = function() {
-      return this.asset.get('name');
-    };
-    Tile.prototype.getDescription = function() {
-      return "";
-    };
-    Tile.prototype.verbs = function() {
-      return [];
-    };
-    Tile.prototype.onclick = function(e) {
-      var menu, player, _fn, _i, _len, _ref;
-      console.log(e.button);
-      player = app.player;
-      menu = new PopupMenu(e);
-      menu.setName(this.getName());
-      menu.setDescription(this.getDescription());
-      _ref = this.verbs();
-      _fn = function(verb) {
-        var func;
-        func = this[verb.getCallbackName()];
-        if (player.canPerform(verb)) {
-          return menu.addMenuItem(verb.getName(), verb.getDescription(), __bind(function() {
-            return func.call(this, player);
-          }, this));
-        } else {
-          return menu.addDisabledMenuItem(verb.getName(), verb.getRequirements());
-        }
-      };
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        verb = _ref[_i];
-        _fn.call(this, verb);
-      }
-      menu.show();
-      e.preventDefault();
-      return e.stopPropagation();
-    };
-    Tile.prototype.onDestroy = function() {
-      return this.remove();
-    };
-    Tile.prototype.isRamp = function() {
-      if (this.asset) {
-        return this.asset.get('name').match(/ramp/i);
-      } else {
-        return false;
-      }
-    };
-    Tile.prototype.isDeadly = function() {
-      if (this.asset) {
-        return this.isLava() || this.isWater();
-      } else {
-        return false;
-      }
-    };
-    Tile.prototype.isLava = function() {
-      if (this.asset) {
-        return this.asset.get('name').match(/lava/i);
-      } else {
-        return false;
-      }
-    };
-    Tile.prototype.isWater = function() {
-      if (this.asset) {
-        return this.asset.get('name').match(/water/i);
-      } else {
-        return false;
-      }
-    };
-    Tile.prototype.drawShadow = function() {
-      if (this.isRamp()) {
-        return false;
-      }
-      return true;
-    };
-    Tile.prototype.toJSON = function() {
-      return {
-        asset_id: this.asset.id
-      };
-    };
     return Tile;
-  }();
+  })();
+  Tile.prototype._draw = function() {
+    x = this.stack.x;
+    y = this.stack.y;
+    height = this.stack.stackingHeight();
+    divheight = this.div.height();
+    divheight = 0;
+    this.div.css({
+      position: 'absolute',
+      left: x * this.gridWidth,
+      top: y * this.gridHeight - divheight - 10 - height,
+      'z-index': y * this.gridHeight + height
+    });
+    return this.div.parent().length === 0 ? this.div.appendTo('#playfield') : void 0;
+  };
+  Tile.prototype.draw = function() {
+    this._draw();
+    this.redrawShadows();
+    _ref = this.stack.getNeighbours();
+    _result = [];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      stack = _ref[_i];
+      _result.push(stack.redrawShadows());
+    }
+    return _result;
+  };
+  Tile.prototype.remove = function() {
+    this.stack.pop();
+    return this.div.remove();
+  };
+  Tile.prototype.clearShadows = function() {
+    return this.div.find('.shadow').remove();
+  };
+  Tile.prototype.redrawShadows = function() {
+    this._draw();
+    this.clearShadows();
+    if (this.drawShadow()) {
+      shadows = {};
+      if (this.stack.westernNeighbour() && (this.stack.westernNeighbour().stackingHeight() > this.stack.stackingHeight())) {
+        $("<img />").addClass('shadow').attr('src', '/images/shadows/west.png').appendTo(this.div);
+        shadows.west = true;
+      }
+      if (this.stack.northernNeighbour() && (this.stack.northernNeighbour().stackingHeight() > this.stack.stackingHeight())) {
+        $("<img />").addClass('shadow').attr('src', '/images/shadows/north.png').appendTo(this.div);
+        shadows.north = true;
+      }
+      if (this.stack.easternNeighbour() && (this.stack.easternNeighbour().stackingHeight() > this.stack.stackingHeight())) {
+        $("<img />").addClass('shadow').attr('src', '/images/shadows/east.png').appendTo(this.div);
+        shadows.east = true;
+      }
+      if (!shadows.west && !shadows.north && this.stack.northWesternNeighbour() && (this.stack.northWesternNeighbour().stackingHeight() > this.stack.stackingHeight())) {
+        $("<img />").addClass('shadow').attr('src', '/images/shadows/northwest.png').appendTo(this.div);
+      }
+      return !shadows.east && !shadows.north && this.stack.northEasternNeighbour() && (this.stack.northEasternNeighbour().stackingHeight() > this.stack.stackingHeight()) ? $("<img />").addClass('shadow').attr('src', '/images/shadows/northeast.png').appendTo(this.div) : void 0;
+    }
+  };
+  Tile.prototype.getHeight = function(x, y) {
+    return !this.asset ? 0 : this.isRamp() ? (this.asset.get('height_east') - this.asset.get('height_west')) * x + this.asset.get('height_west') : 40;
+  };
+  Tile.prototype.getName = function() {
+    return this.asset.get('name');
+  };
+  Tile.prototype.getDescription = function() {
+    return "";
+  };
+  Tile.prototype.verbs = function() {
+    return [];
+  };
+  Tile.prototype.onclick = function(e) {
+    console.log(e.button);
+    player = app.player;
+    menu = new PopupMenu(e);
+    menu.setName(this.getName());
+    menu.setDescription(this.getDescription());
+    _ref = this.verbs();
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      verb = _ref[_i];
+      func = this[verb.getCallbackName()];
+      if (player.canPerform(verb)) {
+        menu.addMenuItem(verb.getName(), verb.getDescription(), __bind(function() {
+          return func.call(this, player);
+        }, this));
+      } else {
+        menu.addDisabledMenuItem(verb.getName(), verb.getRequirements());
+      }
+    }
+    menu.show();
+    e.preventDefault();
+    return e.stopPropagation();
+  };
+  Tile.prototype.onDestroy = function() {
+    return this.remove();
+  };
+  Tile.prototype.isRamp = function() {
+    return this.asset ? this.asset.get('name').match(/ramp/i) : false;
+  };
+  Tile.prototype.isDeadly = function() {
+    return this.asset ? this.isLava() || this.isWater() : false;
+  };
+  Tile.prototype.isLava = function() {
+    return this.asset ? this.asset.get('name').match(/lava/i) : false;
+  };
+  Tile.prototype.isWater = function() {
+    return this.asset ? this.asset.get('name').match(/water/i) : false;
+  };
+  Tile.prototype.drawShadow = function() {
+    if (this.isRamp()) {
+      return false;
+    }
+    return true;
+  };
+  Tile.prototype.toJSON = function() {
+    return {
+      asset_id: this.asset.id
+    };
+  };
   this.Tile = Tile;
 }).call(this);

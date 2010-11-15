@@ -95,6 +95,9 @@ class Stack
   northWesternNeighbour: ->
     @getNeighbour @x - 1, @y - 1
 
+  northEasternNeighbour: ->
+    @getNeighbour @x + 1, @y - 1
+
   southernNeighbour: ->
     @getNeighbour @x, @y + 1
 

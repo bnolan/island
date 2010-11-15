@@ -75,8 +75,8 @@
   $PLAYERS = <%= User.all.to_json.html_safe %>;
   
   $(document).ready(function(){
-    app = new Application;
-    app.addPlayer();
+    window.app = new Application;
+    window.app.addPlayer();
   });
 
 </script>

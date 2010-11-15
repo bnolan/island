@@ -50,26 +50,38 @@ class Tile
     @stack.pop()
     @div.remove()
     
+  clearShadows: ->
+    @div.find('.shadow').remove()
+    
   redrawShadows: ->
     @_draw()
 
-    @div.find('.shadow').remove()
-
+    @clearShadows()
+    
     if @drawShadow()
+      shadows = {}
+      
       if @stack.westernNeighbour() and (@stack.westernNeighbour().stackingHeight() > @stack.stackingHeight())
         $("<img />").addClass('shadow').attr('src', '/images/shadows/west.png').appendTo @div
-
+        shadows.west = true
+      
+      if @stack.northernNeighbour() and (@stack.northernNeighbour().stackingHeight() > @stack.stackingHeight())
+          $("<img />").addClass('shadow').attr('src', '/images/shadows/north.png').appendTo @div
+          shadows.north = true
+          
       if @stack.easternNeighbour() and (@stack.easternNeighbour().stackingHeight() > @stack.stackingHeight())
         $("<img />").addClass('shadow').attr('src', '/images/shadows/east.png').appendTo @div
+        shadows.east = true
+
+      if !shadows.west and !shadows.north and @stack.northWesternNeighbour() and (@stack.northWesternNeighbour().stackingHeight() > @stack.stackingHeight())
+        $("<img />").addClass('shadow').attr('src', '/images/shadows/northwest.png').appendTo @div
+
+      if !shadows.east and !shadows.north and @stack.northEasternNeighbour() and (@stack.northEasternNeighbour().stackingHeight() > @stack.stackingHeight())
+        $("<img />").addClass('shadow').attr('src', '/images/shadows/northeast.png').appendTo @div
 
       # if @stack.northernNeighbour() and (@stack.northernNeighbour().stackingHeight() < @stack.stackingHeight())
       #   $("<img />").addClass('shadow').attr('src', '/images/shadows/south.png').css({ top : -40 }).appendTo @div
 
-      if @stack.northernNeighbour() and (@stack.northernNeighbour().stackingHeight() > @stack.stackingHeight())
-        $("<img />").addClass('shadow').attr('src', '/images/shadows/north.png').appendTo @div
-
-      # if @stack.northWesternNeighbour() and (@stack.northWesternNeighbour().stackingHeight() > @stack.stackingHeight())
-      #   $("<img />").addClass('shadow').attr('src', '/images/shadows/northwest.png').appendTo @div
     
   # x and y are in local coordinate space between 0 and 1
   getHeight: (x,y) ->

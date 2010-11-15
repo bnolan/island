@@ -11,9 +11,8 @@ input[multiple]{
   height: 500px;
 }
 
-canvas{
-  opacity: 0.8;
-  background: #f3f3f3;
+.griddy{
+  background-image: url(/images/grid.png);
 }
 
 .player{

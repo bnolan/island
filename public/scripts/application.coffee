@@ -99,15 +99,13 @@ class Application
     if $ITEMS?
       Items.refresh $ITEMS
 
-    @canvasWidth = $(document).width()
+    @canvasWidth = @map.getDimensions().x
     @canvasHeight = @map.getDimensions().y
     
-    @el = $("<canvas />").attr('width', @canvasWidth).attr('height', @canvasHeight).appendTo '#playfield'
+    @el = $("<div />").addClass('griddy').css({ width : @canvasWidth, height : @canvasHeight}).appendTo '#playfield'
     
-    @ctx = @el[0].getContext '2d'
-    
-
-    @draw()
+    # @ctx = @el[0].getContext '2d'
+    # @draw()
 
     @webSocket = new WebSocket("ws://localhost:8180")
     @webSocket.onopen = @onSocketOpen
@@ -121,6 +119,7 @@ class Application
     #   @map.refresh $MAP
 
     @map.autogenerate()
+    # @map.addItems()
     
     # $("#playfield").draggable {
     #   axis : 'x'
@@ -169,7 +168,7 @@ class Application
     @player = new Player($PLAYER)
     setInterval @tick, 33
     setInterval @networkTick, 200
-    setInterval @creatureTick, 100
+    setInterval @creatureTick, 33
 
     for player in $PLAYERS
       if player.id != @player.id
@@ -197,7 +196,7 @@ class Application
   creatureTick: ->
     for creature in Creatures.models
       creature.redraw()
-      creature.tick( 1 / 10 )
+      creature.tick( 1 / 33 )
 
   networkTick: =>
     if not @player.dead
