@@ -229,3 +229,18 @@ input[multiple]{
   -webkit-border-radius: 3px;
 }
 
+
+
+/*
+ * Particle
+ */
+
+.particle{
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  -webkit-border-radius: 3px;
+  background: black;
+  overflow: hidden;
+  
+}

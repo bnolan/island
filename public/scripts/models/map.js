@@ -9,6 +9,7 @@
       this.gridHeight = this.gridDimensions.y;
       this.maxY = 4;
       this.maxX = 50;
+      this.gravity = 50;
       return this;
     }
     return Map;

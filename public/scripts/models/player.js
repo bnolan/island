@@ -45,6 +45,7 @@
       this.radius = new Vector(20, 7, 0);
       this.map = app.map;
       this.jumpTimer = 10;
+      this.fireTimer = 10;
       this.draw();
       this.dead = false;
       this.health = 10;
@@ -206,6 +207,7 @@
     vdamp = 0.8;
     vmax = 6;
     this.jumpTimer--;
+    this.fireTimer--;
     if (this.groundContact()) {
       if ($.keys[$.keyCodes.LEFT]) {
         this.velocity.x -= vacc;
@@ -221,7 +223,10 @@
       } else {
         this.velocity.y *= vdamp;
       }
-      if ($.keys[$.keyCodes.SPACE] && this.jumpTimer <= 0) {
+      if (($.keys[$.keyCodes.ENTER] || $.keys[$.keyCodes.Z]) && this.fireTimer <= 0) {
+        this.fireTimer = 15;
+      }
+      if (($.keys[$.keyCodes.SPACE] || $.keys[$.keyCodes.X]) && this.jumpTimer <= 0) {
         this.jumpTimer = 15;
         this.velocity.z = 10;
         this.position.z += 1;

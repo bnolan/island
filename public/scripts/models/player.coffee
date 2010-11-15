@@ -33,6 +33,7 @@ class Player extends Model
 
     # Pause between subsequent jumps
     @jumpTimer = 10
+    @fireTimer = 10
     
     @draw()
     
@@ -200,6 +201,7 @@ class Player extends Model
     vdamp = 0.8
     vmax = 6
     @jumpTimer--
+    @fireTimer--
     
     if @groundContact()
       if $.keys[$.keyCodes.LEFT]
@@ -216,8 +218,11 @@ class Player extends Model
       else
         @velocity.y *= vdamp 
 
+      if ($.keys[$.keyCodes.ENTER] or $.keys[$.keyCodes.Z]) and @fireTimer <= 0
+        @fireTimer = 15
+
       # Give a slight bump off the ground so we don't get stuck
-      if $.keys[$.keyCodes.SPACE] and @jumpTimer <= 0
+      if ($.keys[$.keyCodes.SPACE] or $.keys[$.keyCodes.X]) and @jumpTimer <= 0
         @jumpTimer = 15
         @velocity.z = 10
         @position.z += 1

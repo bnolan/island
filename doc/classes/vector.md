@@ -48,3 +48,7 @@ Returns a new vector that is the inverse of this vector.
 ### distance(Vector) -> Float
 
 Returns the length to the other vector
+
+### multiply(Float) -> Vector
+
+Returns the current vector multipled by a scalar

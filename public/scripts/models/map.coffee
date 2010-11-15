@@ -6,6 +6,7 @@ class Map
     @gridHeight = @gridDimensions.y
     @maxY = 4
     @maxX = 50
+    @gravity = 50 # ms-1
 
   getExtents: ->
     new Vector @maxX, @maxY
