@@ -35,6 +35,7 @@ class Creature extends Model
     # @healthBar.find('label').text @health
     
   deathBy: (sender) ->
+    Sounds.play('explosion')
     app.log "You killed a #{@getName()}"
     @hide()
     Creatures.remove @id

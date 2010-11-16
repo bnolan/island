@@ -211,6 +211,7 @@
     if (($.keys[$.keyCodes.ENTER] || $.keys[$.keyCodes.Z]) && this.fireTimer <= 0) {
       this.fireTimer = 15;
       new Particle(app.map);
+      Sounds.play('fire');
     }
     if (this.groundContact()) {
       if ($.keys[$.keyCodes.LEFT]) {
@@ -228,6 +229,7 @@
         this.velocity.y *= vdamp;
       }
       if (($.keys[$.keyCodes.SPACE] || $.keys[$.keyCodes.X]) && this.jumpTimer <= 0) {
+        Sounds.play('jump');
         this.jumpTimer = 15;
         this.velocity.z = 10;
         this.position.z += 1;

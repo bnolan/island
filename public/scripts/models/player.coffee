@@ -207,6 +207,8 @@ class Player extends Model
       @fireTimer = 15
       new Particle app.map
 
+      Sounds.play('fire')
+
     if @groundContact()
       if $.keys[$.keyCodes.LEFT]
         @velocity.x -= vacc
@@ -224,6 +226,9 @@ class Player extends Model
 
       # Give a slight bump off the ground so we don't get stuck
       if ($.keys[$.keyCodes.SPACE] or $.keys[$.keyCodes.X]) and @jumpTimer <= 0
+        
+        Sounds.play('jump')
+        
         @jumpTimer = 15
         @velocity.z = 10
         @position.z += 1

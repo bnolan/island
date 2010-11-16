@@ -51,6 +51,7 @@
     }, 1000);
   };
   Creature.prototype.deathBy = function(sender) {
+    Sounds.play('explosion');
     app.log("You killed a " + (this.getName()));
     this.hide();
     return Creatures.remove(this.id);
