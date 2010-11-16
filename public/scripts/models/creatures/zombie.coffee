@@ -105,12 +105,12 @@ Zombie.spawn = (map) ->
   # stack = new Stack # map.get -1, -1
   
   # while stack.isEmpty()
-  x = 10 # parseInt(Math.random() * 10) + 6# Math.random() * map.getWidth())
+  x = parseInt(Math.random() * 600) + 200 + app.player.getPosition().x
   y = parseInt(Math.random() * map.getHeight())
   
-  stack = map.get x,y
+  # stack = map.get x,y
     
-  z.setPosition(new Vector((x + 0.5) * map.getGridWidth(), (y + 0.5) * map.getGridHeight(), 0))
+  z.setPosition(new Vector(x, (y + 0.5) * map.getGridHeight(), 0))
 
   # z.save()
   z.show()

@@ -82,16 +82,15 @@
     });
   };
   Zombie.spawn = function(map) {
-    var stack, x, y, z;
+    var x, y, z;
     z = new Zombie({
       health: 10,
       maxHealth: 10,
       id: RandomGUID()
     });
-    x = 10;
+    x = parseInt(Math.random() * 600) + 200 + app.player.getPosition().x;
     y = parseInt(Math.random() * map.getHeight());
-    stack = map.get(x, y);
-    z.setPosition(new Vector((x + 0.5) * map.getGridWidth(), (y + 0.5) * map.getGridHeight(), 0));
+    z.setPosition(new Vector(x, (y + 0.5) * map.getGridHeight(), 0));
     z.show();
     Creatures.add(z);
     return z;

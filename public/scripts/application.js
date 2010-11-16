@@ -152,13 +152,13 @@
     return this.webSocketService.processMessage(data);
   };
   Application.prototype.addPlayer = function() {
-    for (i = 1; i <= 2; i++) {
-      Zombie.spawn(this.map);
-    }
     this.player = new Player($PLAYER);
     setInterval(this.tick, 33);
     setInterval(this.networkTick, 200);
     setInterval(this.creatureTick, 33);
+    for (i = 1; i <= 2; i++) {
+      Zombie.spawn(this.map);
+    }
     _ref = $PLAYERS;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       player = _ref[_i];

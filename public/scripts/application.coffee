@@ -161,9 +161,6 @@ class Application
     @webSocketService.processMessage(data)
 
   addPlayer: ->
-    for i from 1 to 2
-      Zombie.spawn(@map)
-    
     # @creature = new Zombie { x : 350, y : 360}
     # @creature.show()
     
@@ -171,6 +168,9 @@ class Application
     setInterval @tick, 33
     setInterval @networkTick, 200
     setInterval @creatureTick, 33
+
+    for i from 1 to 2
+      Zombie.spawn(@map)
 
     for player in $PLAYERS
       if player.id != @player.id
