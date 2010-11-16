@@ -85,7 +85,8 @@
     var stack, x, y, z;
     z = new Zombie({
       health: 10,
-      maxHealth: 10
+      maxHealth: 10,
+      id: RandomGUID()
     });
     x = 10;
     y = parseInt(Math.random() * map.getHeight());

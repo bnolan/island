@@ -52,7 +52,8 @@
   };
   Creature.prototype.deathBy = function(sender) {
     app.log("You killed a " + (this.getName()));
-    return this.hide();
+    this.hide();
+    return Creatures.remove(this.id);
   };
   Creature.prototype.collidesWith = function(position) {
     return this.getPosition().distanceTo(position) < 100;

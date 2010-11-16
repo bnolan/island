@@ -84,6 +84,9 @@
     }
     return FocusGrabber;
   })();
+  this.RandomGUID = function() {
+    return Math.random() * 0xFFFFFF;
+  };
   Application = (function() {
     function Application() {
       var _this;
@@ -167,6 +170,8 @@
     }
     $.keys = {};
     $.keyCodes = {
+      Z: 90,
+      X: 88,
       ALT: 18,
       BACKSPACE: 8,
       CAPS_LOCK: 20,

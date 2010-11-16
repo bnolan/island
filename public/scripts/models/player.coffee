@@ -203,6 +203,10 @@ class Player extends Model
     @jumpTimer--
     @fireTimer--
     
+    if ($.keys[$.keyCodes.ENTER] or $.keys[$.keyCodes.Z]) and @fireTimer <= 0
+      @fireTimer = 15
+      new Particle app.map
+
     if @groundContact()
       if $.keys[$.keyCodes.LEFT]
         @velocity.x -= vacc
@@ -217,9 +221,6 @@ class Player extends Model
         @velocity.y += vacc
       else
         @velocity.y *= vdamp 
-
-      if ($.keys[$.keyCodes.ENTER] or $.keys[$.keyCodes.Z]) and @fireTimer <= 0
-        @fireTimer = 15
 
       # Give a slight bump off the ground so we don't get stuck
       if ($.keys[$.keyCodes.SPACE] or $.keys[$.keyCodes.X]) and @jumpTimer <= 0

@@ -37,6 +37,7 @@ class Creature extends Model
   deathBy: (sender) ->
     app.log "You killed a #{@getName()}"
     @hide()
+    Creatures.remove @id
 
   collidesWith: (position) ->
     @getPosition().distanceTo(position) < 100 # radius.length() + @radius.length()

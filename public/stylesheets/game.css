@@ -237,10 +237,10 @@ input[multiple]{
 
 .particle{
   position: absolute;
-  width: 8px;
+  width: 16px;
   height: 8px;
   -webkit-border-radius: 3px;
-  background: black;
+  background: #0a5;
   overflow: hidden;
   
 }

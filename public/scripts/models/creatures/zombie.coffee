@@ -100,7 +100,7 @@ class Zombie extends Creature
     
 
 Zombie.spawn = (map) ->
-  z = new Zombie { health : 10, maxHealth : 10 }
+  z = new Zombie { health : 10, maxHealth : 10, id : RandomGUID() }
   
   # stack = new Stack # map.get -1, -1
   

@@ -208,6 +208,10 @@
     vmax = 6;
     this.jumpTimer--;
     this.fireTimer--;
+    if (($.keys[$.keyCodes.ENTER] || $.keys[$.keyCodes.Z]) && this.fireTimer <= 0) {
+      this.fireTimer = 15;
+      new Particle(app.map);
+    }
     if (this.groundContact()) {
       if ($.keys[$.keyCodes.LEFT]) {
         this.velocity.x -= vacc;
@@ -222,9 +226,6 @@
         this.velocity.y += vacc;
       } else {
         this.velocity.y *= vdamp;
-      }
-      if (($.keys[$.keyCodes.ENTER] || $.keys[$.keyCodes.Z]) && this.fireTimer <= 0) {
-        this.fireTimer = 15;
       }
       if (($.keys[$.keyCodes.SPACE] || $.keys[$.keyCodes.X]) && this.jumpTimer <= 0) {
         this.jumpTimer = 15;

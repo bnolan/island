@@ -47,7 +47,7 @@ class Map
         if not stack.isFull()
           stack.newTile grass
 
-    for j from 1 to 0
+    for j from 1 to 10
       x = Math.floor(Math.random() * @maxX) + 4
       y = Math.floor(Math.random() * @maxY - 1) + 1
       

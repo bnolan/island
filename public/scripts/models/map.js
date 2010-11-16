@@ -51,7 +51,7 @@
       }
     }
     _result = [];
-    for (j = 1; j <= 0; j++) {
+    for (j = 1; j <= 10; j++) {
       x = Math.floor(Math.random() * this.maxX) + 4;
       y = Math.floor(Math.random() * this.maxY - 1) + 1;
       w = Math.floor(Math.random() * 4);
